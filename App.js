@@ -24,12 +24,13 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
+import TestScreen from './src/screens/TestScreen';
 const App = () => {
   return (
     <>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView>
-        <Text>BP_BLE</Text>
+        <TestScreen />
       </SafeAreaView>
     </>
   );
