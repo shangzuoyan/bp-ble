@@ -25,15 +25,21 @@ import {
   DebugInstructions,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 import TestScreen from './src/screens/TestScreen';
+import History from './src/screens/History';
+import Sync from './src/screens/Sync';
+
+const Tab = createBottomTabNavigator();
+
 const App = () => {
   return (
     <NavigationContainer>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <TestScreen />
-      </SafeAreaView>
+      <Tab.Navigator>
+        <Tab.Screen name="History" component={History} />
+        <Tab.Screen name="Sync" component={Sync} />
+      </Tab.Navigator>
     </NavigationContainer>
   );
 };
@@ -45,6 +51,10 @@ const styles = StyleSheet.create({
   engine: {
     position: 'absolute',
     right: 0,
+  },
+  safeAreaView: {
+    flex: 1,
+    backgroundColor: Colors.white,
   },
   body: {
     backgroundColor: Colors.white,
@@ -78,3 +88,8 @@ const styles = StyleSheet.create({
 });
 
 export default App;
+
+// <StatusBar barStyle="dark-content" />
+// <SafeAreaView style={styles.safeAreaView}>
+//   <TestScreen />
+// </SafeAreaView>

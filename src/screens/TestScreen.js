@@ -34,7 +34,7 @@ export default function TestScreen() {
   ] = useBloodPressureManager();
   return (
     <View>
-      <Button title="FIND" onPress={find}></Button>
+      <Button title="FIND ALL" onPress={find}></Button>
       <Text>{inPairingMode ? 'IN PAIRING MODE' : 'NO'}</Text>
       <Text>{deviceId}</Text>
       <Button title="CONNECT" onPress={connect}></Button>
