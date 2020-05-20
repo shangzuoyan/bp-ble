@@ -5,6 +5,7 @@
  * @format
  * @flow strict-local
  */
+import 'react-native-gesture-handler';
 
 import React from 'react';
 import {
@@ -15,6 +16,7 @@ import {
   Text,
   StatusBar,
 } from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
 
 import {
   Header,
@@ -27,12 +29,12 @@ import {
 import TestScreen from './src/screens/TestScreen';
 const App = () => {
   return (
-    <>
+    <NavigationContainer>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView>
         <TestScreen />
       </SafeAreaView>
-    </>
+    </NavigationContainer>
   );
 };
 
