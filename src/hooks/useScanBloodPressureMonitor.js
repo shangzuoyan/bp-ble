@@ -18,35 +18,39 @@ export default () => {
     }
 
     setLoading(true);
-    bleManager.startDeviceScan(null, null, async (_error, _device) => {
-      console.log('scanning result', _error, _device);
-      if (_error) {
-        // console.log(error);
-        setError(_error);
-        return;
-      }
+    bleManager.startDeviceScan(
+      [BP_Utils.BLE_BLOOD_PRESSURE_SERVICE],
+      null,
+      async (_error, _device) => {
+        console.log('scanning result', _error, _device);
+        if (_error) {
+          // console.log(error);
+          setError(_error);
+          return;
+        }
 
-      const manuData = BP_Utils.parseDeviceManufacturerData(
-        _device.manufacturerData,
-      );
-      const inPairMode = BP_Utils.isDeviceInPairingMode(manuData);
+        const manuData = BP_Utils.parseDeviceManufacturerData(
+          _device.manufacturerData,
+        );
+        const inPairMode = BP_Utils.isDeviceInPairingMode(manuData);
 
-      if (!inPairMode) {
-        return;
-      }
+        if (!inPairMode) {
+          return;
+        }
 
-      if (_device.name && _device.name.startsWith('BP')) {
-        setLoading(false);
-        bleManager.stopDeviceScan();
-        setData({
-          device: {
-            id: _device.id,
-            name: _device.name,
-            localName: _device.localName,
-          },
-        });
-      }
-    });
+        if (_device.name && _device.name.startsWith('BP')) {
+          setLoading(false);
+          bleManager.stopDeviceScan();
+          setData({
+            device: {
+              id: _device.id,
+              name: _device.name,
+              localName: _device.localName,
+            },
+          });
+        }
+      },
+    );
   }
 
   return {loading, error, data, scan};
