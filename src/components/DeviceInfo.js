@@ -6,8 +6,6 @@ export default function DeviceInfo({device}) {
   const {name, localName, id} = device;
   return (
     <View style={styles.modalContainer}>
-      <Text style={styles.headerText}>{id} </Text>
-
       <Text style={styles.headerText}>{name} </Text>
       <Text style={styles.messageText}>{localName}</Text>
     </View>
@@ -15,14 +13,6 @@ export default function DeviceInfo({device}) {
 }
 
 const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    justifyContent: 'center',
-    padding: 40,
-    borderRadius: 6,
-    borderColor: 'gray',
-    backgroundColor: 'rgba(0,0,0,0.3)',
-  },
   modalContainer: {
     backgroundColor: '#fff',
     paddingVertical: 10,

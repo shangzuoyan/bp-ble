@@ -29,6 +29,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.2)',
   },
   message: {
+    textAlign: 'center',
     color: '#00A4CCFF',
     fontSize: 20,
     fontWeight: '700',

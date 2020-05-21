@@ -2,6 +2,8 @@ import React from 'react';
 import {fullUUID} from 'react-native-ble-plx';
 
 import * as BP_Utils from '../utils/bleUtil';
+import * as StorageUtils from '../utils/storageUtil';
+
 import Context from '../contexts/BP_BLE_Context';
 export default () => {
   const {bleManager} = React.useContext(Context);
@@ -11,42 +13,38 @@ export default () => {
   const [data, setData] = React.useState(undefined);
 
   function register(deviceId) {
-    console.log('scan started');
-    if (!bleManager) {
-      console.log('bleManager not set');
-      return;
-    }
-
+    console.log('Registering');
     setLoading(true);
-    bleManager.startDeviceScan(null, null, async (_error, _device) => {
-      console.log('scanning result', _error, _device);
-      if (_error) {
-        // console.log(error);
-        setError(_error);
-        return;
-      }
+    bleManager
+      .connectToDevice(deviceId)
+      .then((device) => {
+        console.log('connectToDevice', device.name);
+        bleManager
+          .discoverAllServicesAndCharacteristicsForDevice(deviceId)
+          .then((results) => {
+            bleManager.isDeviceConnected(device.id).then(async (status) => {
+              console.log('connected', status);
 
-      const manuData = BP_Utils.parseDeviceManufacturerData(
-        _device.manufacturerData,
-      );
-      const inPairMode = BP_Utils.isDeviceInPairingMode(manuData);
+              bleManager.servicesForDevice(device.id).then((services) => {});
 
-      if (!inPairMode) {
-        return;
-      }
+              await StorageUtils.storeRegistration({
+                id: deviceId,
+                name: device.name,
+                localName: device.localName,
+              });
 
-      if (_device.name && _device.name.startsWith('BP')) {
+              setData({result: 'Success connecting'});
+              setLoading(false);
+              setError(false);
+            });
+          });
+      })
+      .catch((error) => {
+        console.log(error);
+        setData(undefined);
         setLoading(false);
-        bleManager.stopDeviceScan();
-        setData({
-          data: {
-            id: _device.id,
-            name: _device.name,
-            localName: _device.localName,
-          },
-        });
-      }
-    });
+        setError({error: 'Error while registering'});
+      });
   }
 
   return {loading, error, data, register};

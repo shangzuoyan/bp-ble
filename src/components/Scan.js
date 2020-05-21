@@ -2,9 +2,9 @@ import React from 'react';
 
 import Loading from './Loading';
 import MonitorNotFoundError from './MonitorNotFoundError';
-import RegisterDevice from './RegisterDevice';
+import Register from './Register';
 import useScanBloodPressureMonitor from '../hooks/useScanBloodPressureMonitor';
-export default function Scan({onCancel}) {
+export default function Scan({onCancel, onSuccess}) {
   React.useEffect(() => {
     scan();
   }, [scan]);
@@ -20,7 +20,13 @@ export default function Scan({onCancel}) {
   if (data) {
     console.log(JSON.stringify(data));
 
-    return <RegisterDevice device={data.device} onCancel={onCancel} />;
+    return (
+      <Register
+        device={data.device}
+        onCancel={onCancel}
+        onSuccess={onSuccess}
+      />
+    );
   }
   return null;
 }

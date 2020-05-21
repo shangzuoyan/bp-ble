@@ -12,16 +12,15 @@ import {
 } from 'react-native';
 
 import Scan from './Scan';
-export default function Sync({onCancel}) {
+export default function Sync({onCancel, onSuccess}) {
   const [scanMode, setScanMode] = React.useState(false);
 
   const cancelHandler = () => {
-    alert('CANCEL');
     setScanMode(false);
   };
 
   if (scanMode) {
-    return <Scan onCancel={cancelHandler} />;
+    return <Scan onCancel={cancelHandler} onSuccess={onSuccess} />;
   }
 
   return (

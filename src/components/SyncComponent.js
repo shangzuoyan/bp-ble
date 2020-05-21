@@ -14,7 +14,17 @@ import {
 import ScanForm from './ScanForm';
 export default function Sync() {
   const [visible, setVisible] = React.useState(false);
+  const [isPaired, setIsPaired] = React.useState(false);
 
+  const successHandler = () => {
+    setIsPaired(true);
+    setVisible(false);
+  };
+
+  const transfer = () => {
+    setVisible(true);
+    setIsPaired(true);
+  };
   return (
     <View style={styles.container}>
       <Modal
@@ -26,19 +36,28 @@ export default function Sync() {
           setVisible(false);
         }}>
         <SafeAreaView style={styles.overlay}>
-          <ScanForm onCancel={() => setVisible(false)} />
+          <ScanForm
+            onCancel={() => setVisible(false)}
+            onSuccess={successHandler}
+          />
         </SafeAreaView>
       </Modal>
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => {
-          setVisible(true);
-        }}>
-        <Text style={styles.buttonText}>
-          Register your new Omron Monitor now
-        </Text>
-      </TouchableOpacity>
+      {isPaired ? (
+        <TouchableOpacity style={styles.button} onPress={transfer}>
+          <Text style={styles.buttonText}>Transfer new Readings</Text>
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => {
+            setVisible(true);
+          }}>
+          <Text style={styles.buttonText}>
+            Register your new Omron Monitor now
+          </Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
