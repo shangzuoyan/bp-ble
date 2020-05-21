@@ -3,7 +3,10 @@ import React from 'react';
 import {StyleSheet, TouchableOpacity, View, Text, Button} from 'react-native';
 
 export default function DeviceInfo({device}) {
+  console.log('DeviceInfo', device);
+  return <Text>{JSON.stringify(device)}</Text>;
   const {name, localName, id} = device;
+
   return (
     <View style={styles.modalContainer}>
       <Text style={styles.headerText}>{name} </Text>

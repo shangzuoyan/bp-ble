@@ -5,6 +5,7 @@ import {Text, View, Button} from 'react-native';
 import MonitorNotFoundError from './MonitorNotFoundError';
 import RegisterDevice from './RegisterDevice';
 import useRegisterBloodPressureMonitor from '../hooks/useRegisterBloodPressureMonitor';
+import GetDeviceService from './GetDeviceService';
 export default function Register({device, onCancel, onSuccess}) {
   const {register, loading, error, data} = useRegisterBloodPressureMonitor();
 
@@ -22,6 +23,7 @@ export default function Register({device, onCancel, onSuccess}) {
     return (
       <View>
         <Text>Success</Text>
+        <GetDeviceService device={device} />
         <Button title="Done" onPress={onSuccess} />
       </View>
     );
@@ -34,6 +36,10 @@ export default function Register({device, onCancel, onSuccess}) {
   }
 
   return (
-    <RegisterDevice onPressRegister={registerHandler} onCancel={onSuccess} />
+    <RegisterDevice
+      device={device}
+      onPressRegister={registerHandler}
+      onCancel={onSuccess}
+    />
   );
 }

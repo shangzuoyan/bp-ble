@@ -25,7 +25,9 @@ export default () => {
             bleManager.isDeviceConnected(device.id).then(async (status) => {
               console.log('connected', status);
 
-              bleManager.servicesForDevice(device.id).then((services) => {});
+              bleManager.servicesForDevice(device.id).then((services) => {
+                console.log('Get all services');
+              });
 
               await StorageUtils.storeRegistration({
                 id: deviceId,

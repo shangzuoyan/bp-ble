@@ -17,7 +17,7 @@ export default function Sync() {
   const [isPaired, setIsPaired] = React.useState(false);
 
   const successHandler = () => {
-    setIsPaired(true);
+    setIsPaired(false);
     setVisible(false);
   };
 
