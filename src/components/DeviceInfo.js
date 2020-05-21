@@ -1,23 +1,15 @@
 import React from 'react';
 
-import {
-  StyleSheet,
-  Modal,
-  View,
-  Text,
-  Button,
-  SafeAreaView,
-} from 'react-native';
+import {StyleSheet, TouchableOpacity, View, Text, Button} from 'react-native';
 
-export default function DeviceInfo({device, onRegister, onCancel}) {
-  const {name, localName} = device;
+export default function DeviceInfo({device}) {
+  const {name, localName, id} = device;
   return (
     <View style={styles.modalContainer}>
+      <Text style={styles.headerText}>{id} </Text>
+
       <Text style={styles.headerText}>{name} </Text>
       <Text style={styles.messageText}>{localName}</Text>
-
-      <Button title="Register" onPress={onRegister} />
-      <Button title="Cancel" onPress={onCancel} />
     </View>
   );
 }

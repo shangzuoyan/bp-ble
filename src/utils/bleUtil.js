@@ -4,7 +4,7 @@ import {Buffer} from 'buffer';
 const IN_PAIRING_MODE = 8;
 const TIME_IS_SET = 1;
 
-export const BLE_SCAN_TIMEOUT_IN_SECONDS = 30;
+export const BLE_TIMEOUT_IN_SECONDS = 30;
 export const BLE_BLOOD_PRESSURE_SERVICE = '1810';
 export const BLE_BLOOD_PRESSURE_MEASURE_CHARACTERISTIC = '2A35';
 export const BLE_BP_BATTERY_SERVICE = '180F';

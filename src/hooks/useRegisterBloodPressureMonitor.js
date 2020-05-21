@@ -10,7 +10,7 @@ export default () => {
   const [error, setError] = React.useState(undefined);
   const [data, setData] = React.useState(undefined);
 
-  function scan() {
+  function register(deviceId) {
     console.log('scan started');
     if (!bleManager) {
       console.log('bleManager not set');
@@ -39,7 +39,7 @@ export default () => {
         setLoading(false);
         bleManager.stopDeviceScan();
         setData({
-          device: {
+          data: {
             id: _device.id,
             name: _device.name,
             localName: _device.localName,
@@ -49,5 +49,5 @@ export default () => {
     });
   }
 
-  return {loading, error, data, scan};
+  return {loading, error, data, register};
 };

@@ -11,34 +11,34 @@ import {
   Button,
 } from 'react-native';
 
-import ScanForm from './ScanForm';
-export default function Sync() {
-  const [visible, setVisible] = React.useState(false);
+import Scan from './Scan';
+export default function Sync({onCancel}) {
+  const [scanMode, setScanMode] = React.useState(false);
+
+  const cancelHandler = () => {
+    alert('CANCEL');
+    setScanMode(false);
+  };
+
+  if (scanMode) {
+    return <Scan onCancel={cancelHandler} />;
+  }
 
   return (
-    <View style={styles.container}>
-      <Modal
-        presentationStyle="overFullScreen"
-        transparent={true}
-        animationType={'slide'}
-        visible={visible}
-        onRequestClose={() => {
-          setVisible(false);
-        }}>
-        <SafeAreaView style={styles.overlay}>
-          <ScanForm onCancel={() => setVisible(false)} />
-        </SafeAreaView>
-      </Modal>
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => {
-          setVisible(true);
-        }}>
-        <Text style={styles.buttonText}>
-          Register your new Omron Monitor now
-        </Text>
-      </TouchableOpacity>
+    <View style={styles.modalContainer}>
+      <Text style={styles.headerText}>Registration </Text>
+      <Text style={styles.instructionsText}>
+        Press the bluetooth button on your monitor until you see a flashing P
+        sign on your monitor screen
+      </Text>
+      <View style={styles.cardActions}>
+        <Button title="Cancel" color="#F95700FF" onPress={onCancel} />
+        <Button
+          title="Find"
+          color="#F95700FF"
+          onPress={() => setScanMode(true)}
+        />
+      </View>
     </View>
   );
 }
