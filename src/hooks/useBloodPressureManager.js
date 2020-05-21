@@ -124,7 +124,7 @@ export default () => {
     );
   }
 
-  return [
+  return {
     inPairingMode,
     deviceId,
     isConnected,
@@ -132,5 +132,6 @@ export default () => {
     connect,
     bloodPressure,
     getBloodPressure,
-  ];
+    bleManager,
+  };
 };
