@@ -1,32 +1,33 @@
 import React from 'react';
-import {Text, View, Button, StyleSheet} from 'react-native';
-import DeviceInfo from './DeviceInfo';
-import UserSelection from './UserSelection';
-export default function RegisterDevice({device, onCancel, onPressRegister}) {
+
+import {Text, View, StyleSheet, Button} from 'react-native';
+
+export default function Sync({onCancel, onSuccess}) {
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>Register Device</Text>
-      <Text style={styles.deviceText}>{device.name} </Text>
-      <Text style={styles.deviceText}>{device.localName}</Text>
-      <UserSelection />
+      <Text style={styles.headerText}>Registration </Text>
+      <Text style={styles.instructionsText}>
+        Press the bluetooth button on your monitor until you see a flashing P
+        sign on your monitor screen
+      </Text>
       <View style={styles.actionArea}>
-        <Button title="Cancel" onPress={onCancel} color="#F95700FF" />
+        <Button title="Cancel" color="#F95700FF" onPress={onCancel} />
         <Button
+          title="Find"
           color="#F95700FF"
-          title="Register"
-          onPress={() => {
-            if (onPressRegister) onPressRegister();
-          }}
+          onPress={() => console.log('df')}
         />
       </View>
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     display: 'flex',
     flexDirection: 'column',
+    alignItems: 'center',
     justifyContent: 'space-between',
   },
   actionArea: {
@@ -41,8 +42,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     fontSize: 24,
   },
-  deviceText: {
-    textAlign: 'center',
+  instructionsText: {
     color: 'gray',
     fontSize: 16,
     marginBottom: 30,

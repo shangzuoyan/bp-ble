@@ -2,22 +2,19 @@ import React from 'react';
 
 import {StyleSheet, View, Text, Button} from 'react-native';
 
-export default function MonitorNotFoundError({onClose, open}) {
+export default function Success({onClose, open}) {
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>
-        Could not find Blood Pressure Monitor
-      </Text>
+      <Text style={styles.headerText}>Success</Text>
       <Text style={styles.messageText}>
-        Please make sure the monitor is in transfer mode, within a few feet and
-        the app is open.
+        You have registered your Omron BP monitor successfully!
       </Text>
 
       <Button
         title="Close"
         onPress={onClose}
         style={styles.button}
-        color="#F95700FF"
+        color="#00A4CCFF"
       />
     </View>
   );
@@ -32,12 +29,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   message: {color: 'gray', fontSize: 16, marginBottom: 30},
-  title: {color: '#ED2B33FF'},
-  button: {color: '#00A4CCFF'},
 
   headerText: {
     textAlign: 'center',
-    color: '#F95700FF',
+    color: '#00A4CCFF',
     marginBottom: 30,
     fontSize: 24,
   },

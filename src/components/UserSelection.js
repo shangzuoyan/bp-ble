@@ -29,12 +29,19 @@ export default function UserSelection({selectedUser, onChange}) {
 }
 
 const styles = StyleSheet.create({
-  container: {flexDirection: 'row', marginHorizontal: 20},
+  container: {
+    flex: 1,
+    flexDirection: 'row',
+    marginHorizontal: 20,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   inputButton: {
     flex: 1,
     backgroundColor: '#dcdcdc',
-    height: 50,
+    padding: 10,
     justifyContent: 'center',
+    marginHorizontal: 5,
   },
   inputText: {color: '#ffffff', textAlign: 'center', fontWeight: '700'},
   inputSelectedButton: {backgroundColor: '#F95700FF'},
