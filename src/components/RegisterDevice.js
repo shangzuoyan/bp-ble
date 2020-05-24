@@ -1,8 +1,7 @@
 import React from 'react';
 import {Text, View, Button, StyleSheet} from 'react-native';
-import DeviceInfo from './DeviceInfo';
 import UserSelection from './UserSelection';
-export default function RegisterDevice({device, onCancel, onPressRegister}) {
+export default function RegisterDevice({device, onCancel, onRegister}) {
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>Register Device</Text>
@@ -15,7 +14,7 @@ export default function RegisterDevice({device, onCancel, onPressRegister}) {
           color="#F95700FF"
           title="Register"
           onPress={() => {
-            if (onPressRegister) onPressRegister();
+            if (onRegister) onRegister();
           }}
         />
       </View>

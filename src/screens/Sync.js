@@ -1,86 +1,67 @@
 import React from 'react';
-import {
-  Text,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Modal,
-  SafeAreaView,
-} from 'react-native';
+import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 
 import BP_MonitorInteractionModalContainer from '../components/BP_MonitorInteractionModalContainer';
 import BP_BLE_Provider from '../contexts/BP_BLE_Provider';
-import StartScan from '../components/StartScan';
-import Loading from '../components/Loading';
-import MonitorNotFoundError from '../components/MonitorNotFoundError';
-import RegisterDevice from '../components/RegisterDevice';
-import Success from '../components/Success';
+import RegistrationMode from '../components/RegistrationMode';
+// import Loading from '../components/Loading';
+// import MonitorNotFoundError from '../components/MonitorNotFoundError';
+// import RegisterDevice from '../components/RegisterDevice';
+// import Success from '../components/Success';
 export default function Sync() {
-  const [visible, setVisible] = React.useState(false);
-  const [isPaired, setIsPaired] = React.useState(false);
-  const [state, setState] = React.useState('Register');
+  const [
+    isBpInteractionWindowOpen,
+    setBPInteractionWindowOpen,
+  ] = React.useState(false);
 
-  const successHandler = () => {
-    setIsPaired(false);
-    setVisible(false);
+  const closeBpInteractionWindow = () => {
+    setBPInteractionWindowOpen(false);
   };
 
-  const transfer = () => {
-    setVisible(true);
-    setIsPaired(true);
+  const openBpInteractionWindow = () => {
+    setBPInteractionWindowOpen(true);
   };
 
   let Window;
-  switch (state) {
-    case 'Success':
-      Window = <Success onClose={() => setVisible(false)} />;
-      break;
-    case 'Error':
-      Window = <MonitorNotFoundError onClose={() => setVisible(false)} />;
-      break;
-    case 'Register':
-      Window = (
-        <RegisterDevice
-          device={{name: 'BP530', localName: 'sdf'}}
-          onCancel={() => setVisible(false)}
-          onSuccess={successHandler}
-        />
-      );
-      break;
-    case 'Loading':
-      Window = <Loading loading={true} operation="Scanning" />;
-      break;
-    case 'StartScan':
-      Window = (
-        <StartScan
-          onCancel={() => setVisible(false)}
-          onSuccess={successHandler}
-        />
-      );
-      break;
-    default:
-      Window = null;
-  }
+  // switch (state) {
+  //   case 'Success':
+  //     Window = <Success onClose={closeBpInteractionWindow} />;
+  //     break;
+  //   case 'Error':
+  //     Window = <MonitorNotFoundError onClose={closeBpInteractionWindow} />;
+  //     break;
+  //   case 'Register':
+  //     Window = (
+  //       <RegisterDevice
+  //         device={{name: 'BP530', localName: 'sdf'}}
+  //         onCancel={closeBpInteractionWindow}
+  //         onSuccess={closeBpInteractionWindow}
+  //       />
+  //     );
+  //     break;
+  //   case 'Loading':
+  //     Window = <Loading loading={true} operation="Scanning" />;
+  //     break;
+  //   case 'StartScan':
+  //     Window = <StartScan onClose={closeBpInteractionWindow} />;
+  //     break;
+  //   default:
+  //     Window = null;
+  // }
+
+  Window = <RegistrationMode onClose={closeBpInteractionWindow} />;
+
   return (
     <BP_BLE_Provider>
       <View style={styles.container}>
-        <Modal
-          presentationStyle="overFullScreen"
-          transparent={true}
-          animationType={'slide'}
-          visible={visible}
-          onRequestClose={() => {
-            setVisible(false);
-          }}>
-          <BP_MonitorInteractionModalContainer>
-            {Window}
-          </BP_MonitorInteractionModalContainer>
-        </Modal>
+        <BP_MonitorInteractionModalContainer
+          visible={isBpInteractionWindowOpen}
+          onRequestClose={closeBpInteractionWindow}>
+          {Window}
+        </BP_MonitorInteractionModalContainer>
         <TouchableOpacity
           style={[styles.button, styles.buttonTransfer]}
-          onPress={() => {
-            setVisible(true);
-          }}>
+          onPress={openBpInteractionWindow}>
           <Text style={styles.buttonText}>
             Transfer new Blood Pressure Readings
           </Text>
@@ -88,9 +69,7 @@ export default function Sync() {
 
         <TouchableOpacity
           style={[styles.button, styles.buttonRegister]}
-          onPress={() => {
-            setVisible(true);
-          }}>
+          onPress={openBpInteractionWindow}>
           <Text style={styles.buttonText}>
             Register your new Omron Monitor now
           </Text>

@@ -1,22 +1,25 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 
 import Loading from './Loading';
 import MonitorNotFoundError from './MonitorNotFoundError';
 import Register from './Register';
 import useScanBloodPressureMonitor from '../hooks/useScanBloodPressureMonitor';
 export default function Scan({onCancel, onSuccess}) {
-  React.useEffect(() => {
-    scan();
-  }, [scan]);
   const {scan, loading, error, data} = useScanBloodPressureMonitor();
+
+  useEffect(() => {
+    scan();
+  }, []);
 
   if (loading) {
     return <Loading loading={true} operation="Scanning" />;
   }
+
   if (error) {
-    console.log(JSON.stringify(error));
+    console.log('TIMED OUT', JSON.stringify(error));
     return <MonitorNotFoundError onClose={onCancel} />;
   }
+
   if (data) {
     console.log(JSON.stringify(data));
 
@@ -28,5 +31,6 @@ export default function Scan({onCancel, onSuccess}) {
       />
     );
   }
+
   return null;
 }

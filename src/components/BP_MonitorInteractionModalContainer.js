@@ -4,20 +4,27 @@ import {
   SafeAreaView,
   View,
   StyleSheet,
+  Modal,
   useWindowDimensions,
 } from 'react-native';
 
-export default function BLE_ModeContainer({children}) {
+export default function BLE_ModeContainer({children, visible, onRequestClose}) {
   const modalHeight = useWindowDimensions().height * 0.5;
   const modalWidth = useWindowDimensions().width * 0.6;
-
   return (
-    <SafeAreaView style={styles.overlay}>
-      <View
-        style={[styles.container, {width: modalWidth, height: modalHeight}]}>
-        {children}
-      </View>
-    </SafeAreaView>
+    <Modal
+      presentationStyle="overFullScreen"
+      transparent={true}
+      animationType={'slide'}
+      visible={visible}
+      onRequestClose={onRequestClose}>
+      <SafeAreaView style={styles.overlay}>
+        <View
+          style={[styles.container, {width: modalWidth, height: modalHeight}]}>
+          {children}
+        </View>
+      </SafeAreaView>
+    </Modal>
   );
 }
 

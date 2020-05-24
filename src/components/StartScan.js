@@ -2,7 +2,7 @@ import React from 'react';
 
 import {Text, View, StyleSheet, Button} from 'react-native';
 
-export default function Sync({onCancel, onSuccess}) {
+export default function StartScan({onClose, onScan}) {
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>Registration </Text>
@@ -11,12 +11,8 @@ export default function Sync({onCancel, onSuccess}) {
         sign on your monitor screen
       </Text>
       <View style={styles.actionArea}>
-        <Button title="Cancel" color="#F95700FF" onPress={onCancel} />
-        <Button
-          title="Find"
-          color="#F95700FF"
-          onPress={() => console.log('df')}
-        />
+        <Button title="Cancel" color="#F95700FF" onPress={onClose} />
+        <Button title="Find" color="#F95700FF" onPress={onScan} />
       </View>
     </View>
   );
