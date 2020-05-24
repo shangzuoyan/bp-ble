@@ -1,55 +1,29 @@
 import React from 'react';
 import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 
+import BloodPressureContext from '../contexts/BloodPressureContext';
 import BP_MonitorInteractionModalContainer from '../components/BP_MonitorInteractionModalContainer';
 import BP_BLE_Provider from '../contexts/BP_BLE_Provider';
 import RegistrationMode from '../components/RegistrationMode';
-// import Loading from '../components/Loading';
-// import MonitorNotFoundError from '../components/MonitorNotFoundError';
-// import RegisterDevice from '../components/RegisterDevice';
-// import Success from '../components/Success';
+import TransferMode from '../components/TransferMode';
 export default function Sync() {
+  const [state] = React.useContext(BloodPressureContext);
   const [
     isBpInteractionWindowOpen,
     setBPInteractionWindowOpen,
   ] = React.useState(false);
+  const [transferMode, setTransferMode] = React.useState(false);
 
   const closeBpInteractionWindow = () => {
     setBPInteractionWindowOpen(false);
   };
 
   const openBpInteractionWindow = () => {
+    if (!state.isPaired) {
+      setTransferMode(false);
+    } else setTransferMode(true);
     setBPInteractionWindowOpen(true);
   };
-
-  let Window;
-  // switch (state) {
-  //   case 'Success':
-  //     Window = <Success onClose={closeBpInteractionWindow} />;
-  //     break;
-  //   case 'Error':
-  //     Window = <MonitorNotFoundError onClose={closeBpInteractionWindow} />;
-  //     break;
-  //   case 'Register':
-  //     Window = (
-  //       <RegisterDevice
-  //         device={{name: 'BP530', localName: 'sdf'}}
-  //         onCancel={closeBpInteractionWindow}
-  //         onSuccess={closeBpInteractionWindow}
-  //       />
-  //     );
-  //     break;
-  //   case 'Loading':
-  //     Window = <Loading loading={true} operation="Scanning" />;
-  //     break;
-  //   case 'StartScan':
-  //     Window = <StartScan onClose={closeBpInteractionWindow} />;
-  //     break;
-  //   default:
-  //     Window = null;
-  // }
-
-  Window = <RegistrationMode onClose={closeBpInteractionWindow} />;
 
   return (
     <BP_BLE_Provider>
@@ -57,23 +31,29 @@ export default function Sync() {
         <BP_MonitorInteractionModalContainer
           visible={isBpInteractionWindowOpen}
           onRequestClose={closeBpInteractionWindow}>
-          {Window}
+          {transferMode ? (
+            <TransferMode onClose={closeBpInteractionWindow} />
+          ) : (
+            <RegistrationMode onClose={closeBpInteractionWindow} />
+          )}
         </BP_MonitorInteractionModalContainer>
-        <TouchableOpacity
-          style={[styles.button, styles.buttonTransfer]}
-          onPress={openBpInteractionWindow}>
-          <Text style={styles.buttonText}>
-            Transfer new Blood Pressure Readings
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.button, styles.buttonRegister]}
-          onPress={openBpInteractionWindow}>
-          <Text style={styles.buttonText}>
-            Register your new Omron Monitor now
-          </Text>
-        </TouchableOpacity>
+        {state.isPaired ? (
+          <TouchableOpacity
+            style={[styles.button, styles.buttonTransfer]}
+            onPress={openBpInteractionWindow}>
+            <Text style={styles.buttonText}>
+              Transfer new Blood Pressure Readings
+            </Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            style={[styles.button, styles.buttonRegister]}
+            onPress={openBpInteractionWindow}>
+            <Text style={styles.buttonText}>
+              Register your new Omron Monitor now
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
     </BP_BLE_Provider>
   );

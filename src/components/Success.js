@@ -2,13 +2,11 @@ import React from 'react';
 
 import {StyleSheet, View, Text, Button} from 'react-native';
 
-export default function Success({onClose, open}) {
+export default function Success({onClose, open, message}) {
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>Success</Text>
-      <Text style={styles.messageText}>
-        You have registered your Omron BP monitor successfully!
-      </Text>
+      <Text style={styles.messageText}>{message}</Text>
 
       <Button
         title="Close"

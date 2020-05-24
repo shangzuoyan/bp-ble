@@ -92,7 +92,6 @@ export default () => {
   };
 
   const onReceiveBloodPressure = (error, bloodChar) => {
-    console.log('onReceiveBloodPressure', error, bloodChar);
     console.log('Current bp', bloodPressure);
     if (!error) {
       const bloodCharValue = bloodChar.value;

@@ -14,8 +14,6 @@ export default () => {
   const [data, setData] = React.useState(undefined);
 
   const onReceiveTimeValue = (error, timeChar) => {
-    console.log('onReceiveonReceiveBatteryValueBloodPressure', error, timeChar);
-    console.log('Current time', timeChar);
     if (!error) {
       const timeBuffer = Buffer.from(timeChar.value, 'base64');
 

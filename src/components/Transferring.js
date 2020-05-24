@@ -4,27 +4,20 @@ import Loading from './Loading';
 import MonitorNotFoundError from './MonitorNotFoundError';
 import Success from './Success';
 import useConnection from '../hooks/useConnection';
-import useDeviceInformation from '../hooks/useDeviceInformation';
 import useBattery from '../hooks/useBattery';
 import useTime from '../hooks/useTime';
 import useGetBloodPressure from '../hooks/useGetBloodPressure';
 import BloodPressureContext from '../contexts/BloodPressureContext';
 import {
-  DEVICE_IS_PAIRED,
   NEW_BLOOD_PRESSURE_SYNC,
   NEW_BLOOD_PRESSURE_READING,
   SYNC_COMPLETE,
 } from '../reducers/bloodPressureReducer';
 
-export default function Registering({onCancel, onSuccess, device}) {
-  const [state, dispatch] = React.useContext(BloodPressureContext);
+export default function Transferring({onCancel, onSuccess}) {
+  const [{device}, dispatch] = React.useContext(BloodPressureContext);
   const {connect, error, loading, data: connectionResult} = useConnection();
-  const {
-    getDeviceInfo,
-    loading: deviceServiceLoading,
-    error: deviceError,
-    data: deviceData,
-  } = useDeviceInformation();
+
   const {data: batteryLevel, getBattery} = useBattery();
   const {data: time, getTime} = useTime();
   const {data: blood, getBloodPressure} = useGetBloodPressure(
@@ -44,7 +37,6 @@ export default function Registering({onCancel, onSuccess, device}) {
       setStartedBloodPressure(true);
       getBattery(device.id);
       getBloodPressure(device.id);
-      getDeviceInfo(device.id);
       getTime(device.id);
     }
   }, [connectionResult]);
@@ -62,14 +54,9 @@ export default function Registering({onCancel, onSuccess, device}) {
       dispatch({
         type: SYNC_COMPLETE,
       });
-
-      dispatch({
-        type: DEVICE_IS_PAIRED,
-        payload: device,
-      });
     }
   }
-  if (deviceError || error) {
+  if (error) {
     return <MonitorNotFoundError onClose={onCancel} />;
   }
 
@@ -79,12 +66,10 @@ export default function Registering({onCancel, onSuccess, device}) {
     return (
       <Success
         onClose={onSuccess}
-        message="You have registered your Omron BP monitor successfully!"
+        message="You have transferred any new readings successfully!"
       />
     );
   }
 
-  return (
-    <Loading loading={true} operation="Registering Blood Pressure Monitor" />
-  );
+  return <Loading loading={true} operation="Transferring readings" />;
 }

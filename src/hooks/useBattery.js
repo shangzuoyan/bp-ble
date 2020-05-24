@@ -14,12 +14,6 @@ export default () => {
   const [data, setData] = React.useState(undefined);
 
   const onReceiveBatteryValue = (error, batteryLevelChar) => {
-    console.log(
-      'onReceiveonReceiveBatteryValueBloodPressure',
-      error,
-      batteryLevelChar,
-    );
-    console.log('Current battery', batteryLevelChar);
     if (!error) {
       const batteryBuffer = Buffer.from(batteryLevelChar.value, 'base64');
 

@@ -3,10 +3,10 @@ import React from 'react';
 import {SafeAreaView, Text, StyleSheet, SectionList} from 'react-native';
 import BP_Reading from '../components/BP_Reading';
 import TransferHeader from '../components/TransferHeader';
-
+import BloodPressureContext from '../contexts/BloodPressureContext';
 const DATA = [
   {
-    transfer: {id: 1, timeTransferred: '01/01/2010'},
+    syncInfo: {id: 1, timeTransferred: '01/01/2010'},
     data: [
       {
         id: 1,
@@ -74,17 +74,25 @@ const DATA = [
 ];
 
 export default function History() {
+  const [state, dispatch] = React.useContext(BloodPressureContext);
+
+  console.log('State', state);
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.headerText}>Blood Pressure History</Text>
-      <SectionList
-        sections={DATA}
-        keyExtractor={(item, index) => index}
-        renderItem={({item}) => <BP_Reading reading={item} />}
-        renderSectionHeader={({section: {transfer}}) => (
-          <TransferHeader transfer={transfer} />
-        )}
-      />
+      <Text>{JSON.stringify(state)}</Text>
+      {state.bloodPressureReadings.length ? (
+        <SectionList
+          sections={state.bloodPressureReadings}
+          keyExtractor={(item, index) => index}
+          renderItem={({item}) => <BP_Reading reading={item} />}
+          renderSectionHeader={({section: {syncInfo}}) => (
+            <TransferHeader transfer={syncInfo} />
+          )}
+        />
+      ) : (
+        <Text>There are no blood pressure readings</Text>
+      )}
     </SafeAreaView>
   );
 }

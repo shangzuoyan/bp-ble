@@ -7,46 +7,53 @@ import {Buffer} from 'buffer';
 import Context from '../contexts/BP_BLE_Context';
 
 const BATTERY_LEVEL_CHARACTERISTIC = '2A19';
-export default () => {
+export default (onReceiveBloodPressure) => {
   const {bleManager} = React.useContext(Context);
 
   const [error, setError] = React.useState(undefined);
   const [data, setData] = React.useState(undefined);
 
-  const onReceiveBloodPressure = (error, bloodChar) => {
-    console.log('onReceiveBloodPressure', error, bloodChar);
+  const _onReceiveBloodPressure = (error, bloodChar) => {
+    // console.log('onReceiveBloodPressure', error, bloodChar);
     if (!error) {
       const bloodCharValue = bloodChar.value;
-      console.log('bloodPressure', bloodCharValue);
+      // console.log('bloodPressure', bloodCharValue);
 
       const bloodMeasure = BP_Utils.parseBloodPressureMeasure(bloodCharValue);
-
+      onReceiveBloodPressure(null, bloodMeasure);
       setData({
         data: {
-          bloodPressure: [
-            ...(data ? data.bloodPressure : []),
-            {
-              userIndex: bloodMeasure.userIndex,
-              systolic: bloodMeasure.systolic,
-              diastolic: bloodMeasure.diastolic,
-              timeStamp: bloodMeasure.timeStamp,
-              pulseRate: bloodMeasure.pulseRate,
-            },
-          ],
+          bloodPressure: [],
         },
       });
+      // setData({
+      //   data: {
+      //     bloodPressure: [
+      //       ...(data ? data.bloodPressure : []),
+      //       {
+      //         userIndex: bloodMeasure.userIndex,
+      //         systolic: bloodMeasure.systolic,
+      //         diastolic: bloodMeasure.diastolic,
+      //         timeStamp: bloodMeasure.timeStamp,
+      //         pulseRate: bloodMeasure.pulseRate,
+      //       },
+      //     ],
+      //   },
+      // });
     } else {
+      onReceiveBloodPressure('Done', null);
+
       setData([]);
     }
   };
 
   async function getBloodPressure(deviceId) {
-    console.log('getBattery');
+    console.log('getBloodPressure');
     const subscribeToChanges = bleManager.monitorCharacteristicForDevice(
       deviceId,
       fullUUID(BP_Utils.BLE_BLOOD_PRESSURE_SERVICE),
       fullUUID(BP_Utils.BLE_BLOOD_PRESSURE_MEASURE_CHARACTERISTIC),
-      onReceiveBloodPressure,
+      _onReceiveBloodPressure,
     );
   }
 

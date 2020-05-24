@@ -3,12 +3,12 @@ import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 
 export default function TransferHeader({transfer}) {
-  const {timeTransferred} = transfer;
+  const {timeSyncStarted} = transfer;
 
   return (
     <View style={styles.container}>
       <Text
-        style={styles.element}>{`Time transferred: ${timeTransferred}`}</Text>
+        style={styles.element}>{`Time transferred: ${timeSyncStarted}`}</Text>
     </View>
   );
 }
