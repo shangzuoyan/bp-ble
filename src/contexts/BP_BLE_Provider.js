@@ -7,7 +7,7 @@ export default ({children}) => {
   return (
     <BP_BLE_Context.Provider
       value={React.useMemo(() => {
-        bleManager;
+        return {bleManager};
       }, [bleManager])}>
       {children}
     </BP_BLE_Context.Provider>

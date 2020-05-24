@@ -79,5 +79,5 @@ export default function SyncContainer({onCancel, onSuccess}) {
     );
   }
 
-  return <Loading message="Transferring readings" />;
+  return <Loading message="Syncing blood pressure readings." />;
 }

@@ -19,7 +19,7 @@ export default function Sync() {
   };
 
   const openBpInteractionWindow = () => {
-    setSyncMode(!state.isPaired);
+    setSyncMode(state.isPaired);
     setBPInteractionWindowOpen(true);
   };
 
@@ -37,7 +37,7 @@ export default function Sync() {
         </BP_MonitorInteractionModal>
         {state.isPaired ? (
           <TouchableOpacity
-            style={[styles.bsutton, styles.buttonTransfer]}
+            style={[styles.button, styles.buttonTransfer]}
             onPress={openBpInteractionWindow}>
             <Text style={styles.buttonText}>
               Sync new Blood Pressure Readings

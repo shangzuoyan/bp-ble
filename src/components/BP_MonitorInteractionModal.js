@@ -8,8 +8,8 @@ import {
 } from 'react-native';
 
 export default function BLE_ModeContainer({children, visible, onRequestClose}) {
-  const modalHeight = useWindowDimensions().height * 0.4;
-  const modalWidth = useWindowDimensions().width * 0.3;
+  const modalHeight = useWindowDimensions().height * 0.5;
+  const modalWidth = useWindowDimensions().width * 0.4;
   return (
     <Modal
       presentationStyle="overFullScreen"
