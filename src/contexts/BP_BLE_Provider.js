@@ -6,9 +6,9 @@ export default ({children}) => {
   const {bleManager} = useBloodPressureManager();
   return (
     <BP_BLE_Context.Provider
-      value={{
-        bleManager,
-      }}>
+      value={React.useMemo(() => {
+        bleManager;
+      }, [bleManager])}>
       {children}
     </BP_BLE_Context.Provider>
   );

@@ -1,14 +1,5 @@
 import React, {useEffect} from 'react';
 
-import Loading from './Loading';
-import MonitorNotFoundError from './MonitorNotFoundError';
-import Success from './Success';
-import useConnection from '../hooks/useConnection';
-import useDeviceInformation from '../hooks/useDeviceInformation';
-import useBattery from '../hooks/useBattery';
-import useTime from '../hooks/useTime';
-import useGetBloodPressure from '../hooks/useGetBloodPressure';
-import BloodPressureContext from '../contexts/BloodPressureContext';
 import {
   DEVICE_IS_PAIRED,
   NEW_BLOOD_PRESSURE_SYNC,
@@ -16,7 +7,19 @@ import {
   SYNC_COMPLETE,
 } from '../reducers/bloodPressureReducer';
 
-export default function Registering({onCancel, onSuccess, device}) {
+import BloodPressureContext from '../contexts/BloodPressureContext';
+
+import useBattery from '../hooks/useBattery';
+import useConnection from '../hooks/useConnection';
+import useDeviceInformation from '../hooks/useDeviceInformation';
+import useGetBloodPressure from '../hooks/useGetBloodPressure';
+import useTime from '../hooks/useTime';
+
+import Error from './Error';
+import Loading from './Loading';
+import Success from './Success';
+
+export default function RegisterContainer({onCancel, onSuccess, device}) {
   const [state, dispatch] = React.useContext(BloodPressureContext);
   const {connect, error, loading, data: connectionResult} = useConnection();
   const {
@@ -70,7 +73,12 @@ export default function Registering({onCancel, onSuccess, device}) {
     }
   }
   if (deviceError || error) {
-    return <MonitorNotFoundError onClose={onCancel} />;
+    return (
+      <Error
+        onClose={onCancel}
+        message="Cannot connect to blood pressure monitor"
+      />
+    );
   }
 
   if (blood) {
@@ -84,7 +92,5 @@ export default function Registering({onCancel, onSuccess, device}) {
     );
   }
 
-  return (
-    <Loading loading={true} operation="Registering Blood Pressure Monitor" />
-  );
+  return <Loading message="Registering Blood Pressure Monitor" />;
 }

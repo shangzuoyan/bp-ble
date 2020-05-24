@@ -1,14 +1,13 @@
 import React from 'react';
-
 import {StyleSheet, View, ActivityIndicator, Text} from 'react-native';
 
-export default function Loading({loading, operation}) {
-  return loading ? (
+export default function Loading({message}) {
+  return (
     <View style={styles.container}>
-      {operation ? <Text style={styles.message}>{operation}</Text> : null}
-      <ActivityIndicator animating={loading} size="large" color="#00A4CCFF" />
+      {message ? <Text style={styles.message}>{message}</Text> : null}
+      <ActivityIndicator animating={true} size="large" color="#00A4CCFF" />
     </View>
-  ) : null;
+  );
 }
 
 const styles = StyleSheet.create({

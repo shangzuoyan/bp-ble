@@ -1,8 +1,7 @@
 import React from 'react';
-
 import {StyleSheet, View, Text, Button} from 'react-native';
 
-export default function Success({onClose, open, message}) {
+export default function Success({onClose, message}) {
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>Success</Text>

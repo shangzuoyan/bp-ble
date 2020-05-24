@@ -1,13 +1,17 @@
 import React from 'react';
-
 import RegisterDevice from './RegisterDevice';
-import Registering from './Registering';
-export default function Register({device, onCancel, onSuccess}) {
+import RegisterContainer from './RegisterContainer';
+
+export default function RegisterDeviceContainer({device, onCancel, onSuccess}) {
   const [isRegistering, setIsRegistering] = React.useState(false);
 
   if (isRegistering) {
     return (
-      <Registering onSuccess={onSuccess} onCancel={onCancel} device={device} />
+      <RegisterContainer
+        onSuccess={onSuccess}
+        onCancel={onCancel}
+        device={device}
+      />
     );
   } else {
     return (

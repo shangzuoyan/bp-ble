@@ -1,6 +1,7 @@
 import React from 'react';
 import {Text, View, Button, StyleSheet} from 'react-native';
 import UserSelection from './UserSelection';
+
 export default function RegisterDevice({device, onCancel, onRegister}) {
   return (
     <View style={styles.container}>

@@ -1,18 +1,17 @@
 import React from 'react';
-
 import {StyleSheet, View, Text, Button} from 'react-native';
 
-export default function MonitorNotFoundError({onClose, open}) {
+export default function Error({
+  onClose,
+  message = 'Could not find Blood Pressure Monitor',
+}) {
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>
-        Could not find Blood Pressure Monitor
-      </Text>
+      <Text style={styles.headerText}>{message}</Text>
       <Text style={styles.messageText}>
-        Please make sure the monitor is in transfer mode, within a few feet and
-        the app is open.
+        Please make sure the monitor is in transfer mode, within a few feet of
+        your device, and the app is open.
       </Text>
-
       <Button
         title="Close"
         onPress={onClose}

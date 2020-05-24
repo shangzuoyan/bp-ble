@@ -1,48 +1,46 @@
 import React from 'react';
 import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
-
 import BloodPressureContext from '../contexts/BloodPressureContext';
-import BP_MonitorInteractionModalContainer from '../components/BP_MonitorInteractionModalContainer';
+import BP_MonitorInteractionModal from '../components/BP_MonitorInteractionModal';
 import BP_BLE_Provider from '../contexts/BP_BLE_Provider';
-import RegistrationMode from '../components/RegistrationMode';
-import TransferMode from '../components/TransferMode';
+import RegistrationModeContainer from '../components/RegistrationModeContainer';
+import SyncModeContainer from '../components/SyncModeContainer';
+
 export default function Sync() {
   const [state] = React.useContext(BloodPressureContext);
   const [
     isBpInteractionWindowOpen,
     setBPInteractionWindowOpen,
   ] = React.useState(false);
-  const [transferMode, setTransferMode] = React.useState(false);
+  const [syncMode, setSyncMode] = React.useState(false);
 
   const closeBpInteractionWindow = () => {
     setBPInteractionWindowOpen(false);
   };
 
   const openBpInteractionWindow = () => {
-    if (!state.isPaired) {
-      setTransferMode(false);
-    } else setTransferMode(true);
+    setSyncMode(!state.isPaired);
     setBPInteractionWindowOpen(true);
   };
 
   return (
     <BP_BLE_Provider>
       <View style={styles.container}>
-        <BP_MonitorInteractionModalContainer
+        <BP_MonitorInteractionModal
           visible={isBpInteractionWindowOpen}
           onRequestClose={closeBpInteractionWindow}>
-          {transferMode ? (
-            <TransferMode onClose={closeBpInteractionWindow} />
+          {syncMode ? (
+            <SyncModeContainer onClose={closeBpInteractionWindow} />
           ) : (
-            <RegistrationMode onClose={closeBpInteractionWindow} />
+            <RegistrationModeContainer onClose={closeBpInteractionWindow} />
           )}
-        </BP_MonitorInteractionModalContainer>
+        </BP_MonitorInteractionModal>
         {state.isPaired ? (
           <TouchableOpacity
-            style={[styles.button, styles.buttonTransfer]}
+            style={[styles.bsutton, styles.buttonTransfer]}
             onPress={openBpInteractionWindow}>
             <Text style={styles.buttonText}>
-              Transfer new Blood Pressure Readings
+              Sync new Blood Pressure Readings
             </Text>
           </TouchableOpacity>
         ) : (

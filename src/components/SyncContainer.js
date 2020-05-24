@@ -1,20 +1,23 @@
 import React, {useEffect} from 'react';
 
-import Loading from './Loading';
-import MonitorNotFoundError from './MonitorNotFoundError';
-import Success from './Success';
-import useConnection from '../hooks/useConnection';
-import useBattery from '../hooks/useBattery';
-import useTime from '../hooks/useTime';
-import useGetBloodPressure from '../hooks/useGetBloodPressure';
-import BloodPressureContext from '../contexts/BloodPressureContext';
 import {
   NEW_BLOOD_PRESSURE_SYNC,
   NEW_BLOOD_PRESSURE_READING,
   SYNC_COMPLETE,
 } from '../reducers/bloodPressureReducer';
 
-export default function Transferring({onCancel, onSuccess}) {
+import BloodPressureContext from '../contexts/BloodPressureContext';
+
+import useConnection from '../hooks/useConnection';
+import useBattery from '../hooks/useBattery';
+import useTime from '../hooks/useTime';
+import useGetBloodPressure from '../hooks/useGetBloodPressure';
+
+import Error from './Error';
+import Loading from './Loading';
+import Success from './Success';
+
+export default function SyncContainer({onCancel, onSuccess}) {
   const [{device}, dispatch] = React.useContext(BloodPressureContext);
   const {connect, error, loading, data: connectionResult} = useConnection();
 
@@ -57,7 +60,12 @@ export default function Transferring({onCancel, onSuccess}) {
     }
   }
   if (error) {
-    return <MonitorNotFoundError onClose={onCancel} />;
+    return (
+      <Error
+        onClose={onCancel}
+        message="Cannot connect to blood pressure monitor"
+      />
+    );
   }
 
   if (blood) {
@@ -71,5 +79,5 @@ export default function Transferring({onCancel, onSuccess}) {
     );
   }
 
-  return <Loading loading={true} operation="Transferring readings" />;
+  return <Loading message="Transferring readings" />;
 }

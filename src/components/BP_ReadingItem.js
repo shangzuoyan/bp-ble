@@ -1,9 +1,8 @@
 import React from 'react';
-
 import {StyleSheet, Text, View} from 'react-native';
 
-export default function BP_Reading({reading}) {
-  const {systolic, diastolic, pulseRate, timeStamp} = reading;
+export default function BP_ReadingItem({reading}) {
+  const {systolic, diastolic, pulseRate, timeStamp, userIndex} = reading;
 
   return (
     <View style={styles.container}>
@@ -11,6 +10,7 @@ export default function BP_Reading({reading}) {
       <Text style={styles.element}>{`Systolic: ${systolic}`}</Text>
       <Text style={styles.element}>{`Diastolic: ${diastolic}`}</Text>
       <Text style={styles.element}>{`Pulse: ${pulseRate}`}</Text>
+      <Text style={styles.element}>{`User: ${userIndex}`}</Text>
     </View>
   );
 }

@@ -1,5 +1,4 @@
 import React from 'react';
-
 import {
   SafeAreaView,
   View,
@@ -9,8 +8,8 @@ import {
 } from 'react-native';
 
 export default function BLE_ModeContainer({children, visible, onRequestClose}) {
-  const modalHeight = useWindowDimensions().height * 0.5;
-  const modalWidth = useWindowDimensions().width * 0.6;
+  const modalHeight = useWindowDimensions().height * 0.4;
+  const modalWidth = useWindowDimensions().width * 0.3;
   return (
     <Modal
       presentationStyle="overFullScreen"
@@ -47,6 +46,6 @@ const styles = StyleSheet.create({
     padding: 40,
     borderRadius: 6,
     borderColor: 'gray',
-    backgroundColor: 'rgba(0,0,0,0.1)',
+    backgroundColor: 'rgba(0,0,0,0.2)',
   },
 });
