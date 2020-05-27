@@ -1,12 +1,14 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-
+import moment from 'moment';
 export default function BP_ReadingItem({reading}) {
   const {systolic, diastolic, pulseRate, timeStamp, userIndex} = reading;
 
   return (
     <View style={styles.container}>
-      <Text style={styles.dateElement}>{`Time of reading: ${timeStamp}`}</Text>
+      <Text style={styles.dateElement}>{`Time of reading: ${moment(
+        timeStamp,
+      ).format('MMMM DD, YYYY hh:mm:A')}`}</Text>
       <Text style={styles.element}>{`Systolic: ${systolic}`}</Text>
       <Text style={styles.element}>{`Diastolic: ${diastolic}`}</Text>
       <Text style={styles.element}>{`Pulse: ${pulseRate}`}</Text>
@@ -21,6 +23,7 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     borderWidth: 1,
     borderRadius: 5,
+    borderColor: '#F95700FF',
     padding: 5,
   },
   dateElement: {color: 'gray', fontSize: 14, marginVertical: 2},

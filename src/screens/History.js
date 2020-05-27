@@ -1,5 +1,11 @@
 import React from 'react';
-import {SafeAreaView, Text, StyleSheet, SectionList} from 'react-native';
+import {
+  SafeAreaView,
+  Text,
+  StyleSheet,
+  SectionList,
+  FlatList,
+} from 'react-native';
 
 import BloodPressureContext from '../contexts/BloodPressureContext';
 
@@ -77,21 +83,21 @@ const DATA = [
 
 export default function History() {
   const [state] = React.useContext(BloodPressureContext);
-
+  console.log('state', JSON.stringify(state));
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.headerText}>Blood Pressure History</Text>
       {state.bloodPressureReadings.length ? (
-        <SectionList
-          sections={state.bloodPressureReadings}
-          keyExtractor={(item, index) => index}
-          renderItem={({item}) => <BP_ReadingItem reading={item} />}
-          renderSectionHeader={({section: {syncInfo}}) => (
-            <SyncHeader transfer={syncInfo} />
-          )}
+        <FlatList
+          data={state.bloodPressureReadings}
+          renderItem={({item}) => <SyncHeader data={item} />}
+          keyExtractor={(item) => {
+            console.log(item);
+            return item.syncInfo.timeSyncStarted.toString();
+          }}
         />
       ) : (
-        <Text>
+        <Text style={styles.message}>
           There are no blood pressure readings. Register your blood pressure
           monitor to get started.
         </Text>
@@ -101,11 +107,23 @@ export default function History() {
 }
 
 const styles = StyleSheet.create({
-  container: {flex: 1, marginHorizontal: 20, marginTop: 60},
+  container: {flex: 1, marginHorizontal: 20, marginTop: 30},
+  message: {textAlign: 'center', fontSize: 14, color: 'gray'},
   headerText: {
     textAlign: 'center',
     color: '#F95700FF',
     marginBottom: 30,
-    fontSize: 24,
+    fontSize: 20,
+    fontWeight: '600',
   },
 });
+
+// <SectionList
+// sections={state.bloodPressureReadings}
+// keyExtractor={(item, index) => index}
+// renderItem={({item}) => <BP_ReadingItem reading={item} />}
+// renderSectionHeader={({section: {syncInfo}}) => (
+//   <SyncHeader transfer={syncInfo} />
+// )}
+// />
+// )

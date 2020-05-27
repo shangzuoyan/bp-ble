@@ -82,11 +82,11 @@ export default function RegisterContainer({onCancel, onSuccess, device}) {
       }
     } else {
       dispatch({
-        type: SYNC_COMPLETE,
-      });
-      dispatch({
         type: DEVICE_IS_PAIRED,
         payload: device,
+      });
+      dispatch({
+        type: SYNC_COMPLETE,
       });
     }
   }
