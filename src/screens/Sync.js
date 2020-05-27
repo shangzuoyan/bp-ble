@@ -1,20 +1,30 @@
 import React from 'react';
 import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
+
+import {UNREGISTER_DEVICE} from '../reducers/bloodPressureReducer';
 import BloodPressureContext from '../contexts/BloodPressureContext';
-import BP_MonitorInteractionModal from '../components/BP_MonitorInteractionModal';
+
 import BP_BLE_Provider from '../contexts/BP_BLE_Provider';
+
+import BP_MonitorInteractionModal from '../components/BP_MonitorInteractionModal';
 import RegistrationModeContainer from '../components/RegistrationModeContainer';
 import SyncModeContainer from '../components/SyncModeContainer';
+import RegisteredDevice from '../components/RegisteredDevice';
 
-export default function Sync() {
-  const [state] = React.useContext(BloodPressureContext);
+export default function Sync({navigation}) {
+  const [state, dispatch] = React.useContext(BloodPressureContext);
   const [
     isBpInteractionWindowOpen,
     setBPInteractionWindowOpen,
   ] = React.useState(false);
   const [syncMode, setSyncMode] = React.useState(false);
 
-  const closeBpInteractionWindow = () => {
+  const onSuccess = () => {
+    setBPInteractionWindowOpen(false);
+    navigation.navigate('History');
+  };
+
+  const onClose = () => {
     setBPInteractionWindowOpen(false);
   };
 
@@ -23,19 +33,35 @@ export default function Sync() {
     setBPInteractionWindowOpen(true);
   };
 
+  const unRegisterDevice = () => {
+    dispatch({type: UNREGISTER_DEVICE});
+  };
+
   return (
-    <BP_BLE_Provider>
-      <View style={styles.container}>
-        <BP_MonitorInteractionModal
-          visible={isBpInteractionWindowOpen}
-          onRequestClose={closeBpInteractionWindow}>
-          {syncMode ? (
-            <SyncModeContainer onClose={closeBpInteractionWindow} />
-          ) : (
-            <RegistrationModeContainer onClose={closeBpInteractionWindow} />
-          )}
-        </BP_MonitorInteractionModal>
-        {state.isPaired ? (
+    <View style={styles.container}>
+      <BP_MonitorInteractionModal
+        visible={isBpInteractionWindowOpen}
+        onRequestClose={onClose}>
+        <BP_BLE_Provider>
+          {isBpInteractionWindowOpen ? (
+            syncMode ? (
+              <SyncModeContainer onClose={onClose} onSuccess={onSuccess} />
+            ) : (
+              <RegistrationModeContainer
+                onClose={onClose}
+                onSuccess={onSuccess}
+              />
+            )
+          ) : null}
+        </BP_BLE_Provider>
+      </BP_MonitorInteractionModal>
+      {state.isPaired ? (
+        <>
+          <RegisteredDevice
+            device={state.device}
+            onUnregister={unRegisterDevice}
+          />
+
           <TouchableOpacity
             style={[styles.button, styles.buttonTransfer]}
             onPress={openBpInteractionWindow}>
@@ -43,17 +69,17 @@ export default function Sync() {
               Sync new Blood Pressure Readings
             </Text>
           </TouchableOpacity>
-        ) : (
-          <TouchableOpacity
-            style={[styles.button, styles.buttonRegister]}
-            onPress={openBpInteractionWindow}>
-            <Text style={styles.buttonText}>
-              Register your new Omron Monitor now
-            </Text>
-          </TouchableOpacity>
-        )}
-      </View>
-    </BP_BLE_Provider>
+        </>
+      ) : (
+        <TouchableOpacity
+          style={[styles.button, styles.buttonRegister]}
+          onPress={openBpInteractionWindow}>
+          <Text style={styles.buttonText}>
+            Register your new Omron Monitor now
+          </Text>
+        </TouchableOpacity>
+      )}
+    </View>
   );
 }
 

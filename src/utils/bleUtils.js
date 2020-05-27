@@ -1,23 +1,17 @@
 import {Buffer} from 'buffer';
 
-// const bloodPressureMeasureValue = "HoQAWgBoAOQHBRIMKRVnAAIAAA==";
 const IN_PAIRING_MODE = 8;
 const TIME_IS_SET = 1;
 
-export const BLE_TIMEOUT_IN_SECONDS = 10000;
+export const BLE_TIMEOUT_IN_SECONDS = 10;
 export const BLE_BLOOD_PRESSURE_SERVICE = '1810';
-export const BLE_BLOOD_PRESSURE_MEASURE_CHARACTERISTIC = '2A35';
-export const BLE_BP_BATTERY_SERVICE = '180F';
 export const BLE_BP_CURRENT_TIME_SERVICE = '1805';
 export const BLE_BP_USER_DATA_SERVICE = '181C';
-export const BLE_BP_DEVICE_INFORMATION_SERVICE = '180A';
-export const BLE_BP_DEVICE_MANUFACTURER_NAME_CHARACTERISTIC = '2A29';
 
 export const parseBloodPressureMeasure = (bloodPressureMeasureBase64) => {
   let bloodPressureBuffer = Buffer.from(bloodPressureMeasureBase64, 'base64');
   console.log(bloodPressureBuffer.toString('hex'));
   // bloodPressureBuffer = new Uint8Array(bloodPressureBuffer, 0, 1);
-  console.log(bloodPressureBuffer);
   const bloodPressureMeasure = {
     flags: null,
     systolic: null,
@@ -40,7 +34,11 @@ export const parseBloodPressureMeasure = (bloodPressureMeasureBase64) => {
   const minute = bloodPressureBuffer.readUInt8(12);
   const second = bloodPressureBuffer.readUInt8(13);
 
-  const timeStamp = new Date(year, month, day, hour, minute, second);
+  let timeStamp;
+  if (!year) {
+    timeStamp = new Date();
+  } else timeStamp = new Date(year, month, day, hour, minute, second);
+
   bloodPressureMeasure.timeStamp = timeStamp;
 
   console.log('bloodPressureMeasure', bloodPressureMeasure);

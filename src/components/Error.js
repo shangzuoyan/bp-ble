@@ -9,8 +9,8 @@ export default function Error({
     <View style={styles.container}>
       <Text style={styles.headerText}>{message}</Text>
       <Text style={styles.messageText}>
-        Please make sure the monitor is in sync mode, within a few feet of your
-        mobile device, and the app is open and in sync mode.
+        Please make sure the monitor is in sync mode and within a few feet of
+        your mobile device.
       </Text>
       <Button
         title="Close"

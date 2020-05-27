@@ -1,37 +1,15 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
 import 'react-native-gesture-handler';
 
 import React from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-} from 'react-native';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationContainer} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import BloodPressureProvider from './src/contexts/BloodPressureProvider';
 
-import TestScreen from './src/screens/TestScreen';
 import History from './src/screens/History';
 import Sync from './src/screens/Sync';
-import BloodPressureProvider from './src/contexts/BloodPressureProvider';
+
 const Tab = createBottomTabNavigator();
 
 const App = () => {
@@ -49,7 +27,6 @@ const App = () => {
                 iconName = focused ? 'ios-sync' : 'ios-sync';
               }
 
-              // You can return any component that you like here!
               return <Ionicons name={iconName} size={size} color={color} />;
             },
           })}
@@ -65,52 +42,4 @@ const App = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
-  },
-  engine: {
-    position: 'absolute',
-    right: 0,
-  },
-  safeAreaView: {
-    flex: 1,
-    backgroundColor: Colors.white,
-  },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
-});
-
 export default App;
-
-// <StatusBar barStyle="dark-content" />
-// <SafeAreaView style={styles.safeAreaView}>
-//   <TestScreen />
-// </SafeAreaView>

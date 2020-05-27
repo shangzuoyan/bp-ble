@@ -1,29 +1,35 @@
 import React from 'react';
 
-import * as BP_Utils from '../utils/bleUtil';
+import * as BP_Utils from '../utils/bleUtils';
 import Context from '../contexts/BP_BLE_Context';
+
 export default () => {
-  const {bleManager} = React.useContext(Context);
+  const {bleManager, bluetoothState} = React.useContext(Context);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(undefined);
   const [data, setData] = React.useState(undefined);
 
   function scan() {
-    console.log('scan started');
+    console.log('Entered scan');
     if (!bleManager) {
-      console.log('bleManager not set');
+      console.log('bleManager has not been setup.  Use useBleManager');
       return;
     }
 
     setLoading(true);
 
     const timeoutID = setTimeout(() => {
+      console.log(
+        `Scan timed out after ${BP_Utils.BLE_TIMEOUT_IN_SECONDS} seconds`,
+      );
       bleManager.stopDeviceScan();
-      console.log('Error', 'Scanning Timed out');
       setLoading(false);
       setData(undefined);
-      setError({error: 'Timed out'});
-    }, BP_Utils.BLE_TIMEOUT_IN_SECONDS);
+      setError({
+        error:
+          'Scan timed out after ${BP_Utils.BLE_TIMEOUT_IN_SECONDS} seconds',
+      });
+    }, BP_Utils.BLE_TIMEOUT_IN_SECONDS * 1000);
 
     bleManager.startDeviceScan(
       [BP_Utils.BLE_BLOOD_PRESSURE_SERVICE],
@@ -31,11 +37,10 @@ export default () => {
       async (_error, _device) => {
         console.log('scanning result', _error, _device);
         if (_error) {
-          // console.log(error);
+          console.log('Scan error:', _error);
           setError(_error);
           return;
         }
-
         const manuData = BP_Utils.parseDeviceManufacturerData(
           _device.manufacturerData,
         );
@@ -46,8 +51,8 @@ export default () => {
         }
 
         if (_device.name && _device.name.startsWith('BP')) {
+          console.log('Scan: device found', _device.name);
           clearTimeout(timeoutID);
-          console.log('Stopping scan found device');
           setLoading(false);
           bleManager.stopDeviceScan();
           setData({
@@ -62,5 +67,5 @@ export default () => {
     );
   }
 
-  return {loading, error, data, scan};
+  return {loading, error, data, scan, bluetoothState};
 };

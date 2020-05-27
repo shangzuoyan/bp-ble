@@ -2,6 +2,7 @@ export const DEVICE_IS_PAIRED = 'DEVICE_IS_PAIRED';
 export const NEW_BLOOD_PRESSURE_READING = 'NEW_BLOOD_PRESSURE_READING';
 export const NEW_BLOOD_PRESSURE_SYNC = 'NEW_BLOOD_PRESSURE_SYNC';
 export const SYNC_COMPLETE = 'SYNC_COMPLETE';
+export const UNREGISTER_DEVICE = 'UNREGISTER_DEVICE';
 
 const initialState = {
   bloodPressureReadings: [],
@@ -29,8 +30,8 @@ export default function bloodPressureReducer(state = initialState, action) {
         ...state,
         currentSync: {},
         bloodPressureReadings: [
-          ...state.bloodPressureReadings,
           state.currentSync,
+          ...state.bloodPressureReadings,
         ],
       };
     case NEW_BLOOD_PRESSURE_READING:
@@ -41,7 +42,12 @@ export default function bloodPressureReducer(state = initialState, action) {
           data: [...state.currentSync.data, action.payload],
         },
       };
-
+    case UNREGISTER_DEVICE:
+      return {
+        ...state,
+        isPaired: false,
+        device: {},
+      };
     default:
       return state;
   }

@@ -4,7 +4,7 @@ import {Text, View, Button, StyleSheet} from 'react-native';
 export default function SyncReadings({device, onCancel, onTransfer}) {
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>Transfer Data</Text>
+      <Text style={styles.headerText}>Sync Data</Text>
       <Text style={styles.deviceText}>{device.name} </Text>
       <Text style={styles.deviceText}>{device.localName}</Text>
       <Text style={styles.instructionsText}>
@@ -15,7 +15,7 @@ export default function SyncReadings({device, onCancel, onTransfer}) {
         <Button title="Cancel" onPress={onCancel} color="#F95700FF" />
         <Button
           color="#F95700FF"
-          title="Transfer Data"
+          title="Sync"
           onPress={() => {
             if (onTransfer) onTransfer();
           }}

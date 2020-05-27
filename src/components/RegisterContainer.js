@@ -9,11 +9,12 @@ import {
 
 import BloodPressureContext from '../contexts/BloodPressureContext';
 
-import useBattery from '../hooks/useBattery';
+// import useBattery from '../hooks/useBatteryService';
 import useConnection from '../hooks/useConnection';
-import useDeviceInformation from '../hooks/useDeviceInformation';
-import useGetBloodPressure from '../hooks/useGetBloodPressure';
-import useTime from '../hooks/useTime';
+import useDeviceInformationService from '../hooks/useDeviceInformationService';
+import useBloodPressureService from '../hooks/useBloodPressureService';
+// import useTime from '../hooks/useTimeService';
+// import useUserIndex from '../hooks/useUserIndex';
 
 import Error from './Error';
 import Loading from './Loading';
@@ -21,19 +22,34 @@ import Success from './Success';
 
 export default function RegisterContainer({onCancel, onSuccess, device}) {
   const [state, dispatch] = React.useContext(BloodPressureContext);
-  const {connect, error, loading, data: connectionResult} = useConnection();
+  const {
+    connect,
+    error: errorConnecting,
+    loading: connecting,
+    data: connectionResult,
+  } = useConnection();
+
   const {
     getDeviceInfo,
     loading: deviceServiceLoading,
     error: deviceError,
     data: deviceData,
-  } = useDeviceInformation();
-  const {data: batteryLevel, getBattery} = useBattery();
-  const {data: time, getTime} = useTime();
-  const {data: blood, getBloodPressure} = useGetBloodPressure(
+  } = useDeviceInformationService();
+  // const {data: batteryLevel, getBattery} = useBattery();
+  // const {data: time, getTime} = useTime();
+  const {complete, getBloodPressureNotifications} = useBloodPressureService(
     bloodPressureReceiveHandler,
   );
+
+  // const {
+  //   error: userError,
+  //   loading: userLoading,
+  //   writeUserIndex,
+  //   getUserIndex,
+  // } = useUserIndex(userIndexHandler);
+
   const [startedBloodPressure, setStartedBloodPressure] = React.useState(false);
+
   useEffect(() => {
     connect(device.id);
     dispatch({
@@ -45,10 +61,13 @@ export default function RegisterContainer({onCancel, onSuccess, device}) {
   useEffect(() => {
     if (connectionResult && connectionResult.success && !startedBloodPressure) {
       setStartedBloodPressure(true);
-      getBattery(device.id);
-      getBloodPressure(device.id);
-      getDeviceInfo(device.id);
-      getTime(device.id);
+      // getBattery(device.id);
+      // getUserIndex(device.id);
+
+      getBloodPressureNotifications(device.id);
+      // getDeviceInfo(device.id);
+      // getTime(device.id);
+      // writeUserIndex(device.id);
     }
   }, [connectionResult]);
 
@@ -65,25 +84,44 @@ export default function RegisterContainer({onCancel, onSuccess, device}) {
       dispatch({
         type: SYNC_COMPLETE,
       });
-
       dispatch({
         type: DEVICE_IS_PAIRED,
         payload: device,
       });
     }
   }
-  if (deviceError || error) {
+
+  // function userIndexHandler(error, userIndexValue) {
+  //   console.log('userIndexHandler', userIndexValue);
+  //   if (error) console.log('userIndexHandler', error);
+  //   // if (!error) {
+  //   //   if (bloodPressureValue) {
+  //   //     dispatch({
+  //   //       type: NEW_BLOOD_PRESSURE_READING,
+  //   //       payload: bloodPressureValue,
+  //   //     });
+  //   //   }
+  //   // } else {
+  //   //   dispatch({
+  //   //     type: SYNC_COMPLETE,
+  //   //   });
+
+  //   //   dispatch({
+  //   //     type: DEVICE_IS_PAIRED,
+  //   //     payload: device,
+  //   //   });
+  //   // }
+  // }
+  if (deviceError || errorConnecting) {
     return (
       <Error
         onClose={onCancel}
-        message="Cannot connect to blood pressure monitor"
+        message="Error registering with blood pressure monitor.  Please try again."
       />
     );
   }
 
-  if (blood) {
-    console.log(JSON.stringify(blood));
-
+  if (complete) {
     return (
       <Success
         onClose={onSuccess}

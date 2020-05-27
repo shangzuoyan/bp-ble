@@ -1,11 +1,9 @@
 import React from 'react';
-import {fullUUID} from 'react-native-ble-plx';
 
-import * as BP_Utils from '../utils/bleUtil';
-import * as StorageUtils from '../utils/storageUtil';
 import {Buffer} from 'buffer';
 import Context from '../contexts/BP_BLE_Context';
 
+const BLE_BP_DEVICE_INFORMATION_SERVICE = '180A';
 const HARDWARE_REVISION_CHARACTERISTIC = '2A27';
 const MODEL_NUMBER_CHARACTERISTIC = '2A24';
 const SOFTWARE_REVISION_CHARACTERISTIC = '2A28';
@@ -14,7 +12,7 @@ const MANUFACTURER_NAME_CHARACTERISTIC = '2A29';
 const FIRMWARE_REVISION_CHARACTERISTIC = '2A26';
 const SYSTEM_ID_CHARACTERISTIC = '2A23';
 
-export default () => {
+export default function useDeviceInformationService() {
   const {bleManager} = React.useContext(Context);
 
   const [loading, setLoading] = React.useState(false);
@@ -29,7 +27,7 @@ export default () => {
 
       const hardwareRevisionChar = await bleManager.readCharacteristicForDevice(
         deviceId,
-        BP_Utils.BLE_BP_DEVICE_INFORMATION_SERVICE,
+        BLE_BP_DEVICE_INFORMATION_SERVICE,
         HARDWARE_REVISION_CHARACTERISTIC,
       );
 
@@ -44,7 +42,7 @@ export default () => {
 
       const modelNumberChar = await bleManager.readCharacteristicForDevice(
         deviceId,
-        BP_Utils.BLE_BP_DEVICE_INFORMATION_SERVICE,
+        BLE_BP_DEVICE_INFORMATION_SERVICE,
         MODEL_NUMBER_CHARACTERISTIC,
       );
 
@@ -56,7 +54,7 @@ export default () => {
 
       const manufacturerNameChar = await bleManager.readCharacteristicForDevice(
         deviceId,
-        BP_Utils.BLE_BP_DEVICE_INFORMATION_SERVICE,
+        BLE_BP_DEVICE_INFORMATION_SERVICE,
         MANUFACTURER_NAME_CHARACTERISTIC,
       );
 
@@ -80,4 +78,4 @@ export default () => {
   }
 
   return {loading, error, data, getDeviceInfo};
-};
+}

@@ -81,7 +81,6 @@ export default function History() {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.headerText}>Blood Pressure History</Text>
-      <Text>{JSON.stringify(state)}</Text>
       {state.bloodPressureReadings.length ? (
         <SectionList
           sections={state.bloodPressureReadings}

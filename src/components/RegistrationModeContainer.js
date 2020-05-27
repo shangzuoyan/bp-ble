@@ -2,14 +2,14 @@ import React from 'react';
 import ScanContainer from './ScanContainer';
 import Scan from './Scan';
 
-export default function RegistrationModeContainer({onClose}) {
+export default function RegistrationModeContainer({onSuccess, onClose}) {
   const [registeringState, setRegisteringState] = React.useState(false);
 
   if (registeringState) {
     return (
       <ScanContainer
         onCancel={() => setRegisteringState(false)}
-        onSuccess={onClose}
+        onSuccess={onSuccess}
       />
     );
   }

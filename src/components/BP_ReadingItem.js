@@ -6,7 +6,7 @@ export default function BP_ReadingItem({reading}) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.element}>{`Time of reading: ${timeStamp}`}</Text>
+      <Text style={styles.dateElement}>{`Time of reading: ${timeStamp}`}</Text>
       <Text style={styles.element}>{`Systolic: ${systolic}`}</Text>
       <Text style={styles.element}>{`Diastolic: ${diastolic}`}</Text>
       <Text style={styles.element}>{`Pulse: ${pulseRate}`}</Text>
@@ -16,6 +16,14 @@ export default function BP_ReadingItem({reading}) {
 }
 
 const styles = StyleSheet.create({
-  container: {justifyContent: 'flex-start', marginVertical: 20},
-  element: {color: 'gray', fontSize: 20, marginVertical: 5},
+  container: {
+    justifyContent: 'flex-start',
+    marginVertical: 20,
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 5,
+  },
+  dateElement: {color: 'gray', fontSize: 14, marginVertical: 2},
+
+  element: {color: 'gray', fontSize: 20, marginVertical: 2},
 });

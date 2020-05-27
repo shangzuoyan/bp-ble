@@ -49,7 +49,7 @@
 		03F383FE822E49319323A4A2 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		03F664615833A1F84F3EEF35 /* libPods-bp_ble-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-bp_ble-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A9CF42A9E714585B48A4077 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* bp_ble.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = bp_ble.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* Blood Pressure App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Blood Pressure App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = bp_ble/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = bp_ble/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB21A68108700A75B9A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -214,7 +214,7 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* bp_ble.app */,
+				13B07F961A680F5B00A75B9A /* Blood Pressure App.app */,
 				00E356EE1AD99517003FC87E /* bp_bleTests.xctest */,
 				2D02E47B1E0B4A5D006451C7 /* bp_ble-tvOS.app */,
 				2D02E4901E0B4A5D006451C7 /* bp_ble-tvOSTests.xctest */,
@@ -278,7 +278,7 @@
 			);
 			name = bp_ble;
 			productName = bp_ble;
-			productReference = 13B07F961A680F5B00A75B9A /* bp_ble.app */;
+			productReference = 13B07F961A680F5B00A75B9A /* Blood Pressure App.app */;
 			productType = "com.apple.product-type.application";
 		};
 		2D02E47A1E0B4A5D006451C7 /* bp_ble-tvOS */ = {
@@ -786,8 +786,8 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = bp_ble;
+				PRODUCT_BUNDLE_IDENTIFIER = "us.aar.bp-ble";
+				PRODUCT_NAME = "Blood Pressure App";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -810,8 +810,8 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = bp_ble;
+				PRODUCT_BUNDLE_IDENTIFIER = "us.aar.bp-ble";
+				PRODUCT_NAME = "Blood Pressure App";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";

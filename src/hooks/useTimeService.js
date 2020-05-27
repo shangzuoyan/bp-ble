@@ -1,7 +1,7 @@
 import React from 'react';
 import {fullUUID} from 'react-native-ble-plx';
 
-import * as BP_Utils from '../utils/bleUtil';
+import * as BP_Utils from '../utils/bleUtils';
 import * as StorageUtils from '../utils/storageUtil';
 import {Buffer} from 'buffer';
 import Context from '../contexts/BP_BLE_Context';
@@ -13,27 +13,27 @@ export default () => {
   const [error, setError] = React.useState(undefined);
   const [data, setData] = React.useState(undefined);
 
-  const onReceiveBatteryValue = (error, batteryLevelChar) => {
+  const onReceiveTimeValue = (error, timeChar) => {
     if (!error) {
-      const batteryBuffer = Buffer.from(batteryLevelChar.value, 'base64');
+      const timeBuffer = Buffer.from(timeChar.value, 'base64');
 
-      const batteryLevel = batteryBuffer.toString();
-      setData({data: batteryLevel});
+      const timeValue = timeBuffer.toString();
+      setData({data: timeValue});
     } else {
       console.log(error);
       // setError(JSON.stringify(error));
     }
   };
 
-  async function getBattery(deviceId) {
+  async function getTime(deviceId) {
     console.log('getBattery');
     const subscribeToChanges = bleManager.monitorCharacteristicForDevice(
       deviceId,
-      BP_Utils.BLE_BP_BATTERY_SERVICE,
-      BATTERY_LEVEL_CHARACTERISTIC,
-      onReceiveBatteryValue,
+      fullUUID('1805'),
+      fullUUID('2A2B'),
+      onReceiveTimeValue,
     );
   }
 
-  return {data, getBattery};
+  return {data, getTime};
 };
