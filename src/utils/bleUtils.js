@@ -9,8 +9,6 @@ export const BLE_BP_CURRENT_TIME_SERVICE = '1805';
 export const BLE_BP_USER_DATA_SERVICE = '181C';
 
 export const parseBloodPressureMeasure = (bloodPressureMeasureBase64) => {
-  let bloodPressureBuffer = Buffer.from(bloodPressureMeasureBase64, 'base64');
-  // bloodPressureBuffer = new Uint8Array(bloodPressureBuffer, 0, 1);
   const bloodPressureMeasure = {
     flags: null,
     systolic: null,
@@ -20,6 +18,13 @@ export const parseBloodPressureMeasure = (bloodPressureMeasureBase64) => {
     pulseRate: null,
     userIndex: null,
   };
+
+  if (!bloodPressureMeasureBase64) {
+    return bloodPressureMeasure;
+  }
+
+  let bloodPressureBuffer = Buffer.from(bloodPressureMeasureBase64, 'base64');
+  // bloodPressureBuffer = new Uint8Array(bloodPressureBuffer, 0, 1);
   bloodPressureMeasure.flags = bloodPressureBuffer[0];
   bloodPressureMeasure.systolic = bloodPressureBuffer.readUInt16LE(1);
   bloodPressureMeasure.diastolic = bloodPressureBuffer.readUInt16LE(3);
@@ -45,6 +50,15 @@ export const parseBloodPressureMeasure = (bloodPressureMeasureBase64) => {
 };
 
 export const parseDeviceManufacturerData = (deviceManufacturerDataBase64) => {
+  let deviceManufacturerData = {
+    companyIdentifierKey: undefined,
+    flag: 0,
+  };
+
+  if (!deviceManufacturerDataBase64) {
+    return deviceManufacturerData;
+  }
+
   let deviceManufacturerBuffer = Buffer.from(
     deviceManufacturerDataBase64,
     'base64',
@@ -52,7 +66,7 @@ export const parseDeviceManufacturerData = (deviceManufacturerDataBase64) => {
 
   deviceManufacturerBuffer = new Uint8Array(deviceManufacturerBuffer, 0, 1);
 
-  const deviceManufacturerData = {
+  deviceManufacturerData = {
     companyIdentifierKey: deviceManufacturerBuffer,
     flag: deviceManufacturerBuffer[3],
   };

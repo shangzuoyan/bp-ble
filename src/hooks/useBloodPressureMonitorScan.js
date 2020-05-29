@@ -4,7 +4,7 @@ import Context from '../contexts/BP_BLE_Context';
 
 import * as BP_Utils from '../utils/bleUtils';
 
-export default function useBloodPressureMonitorScan() {
+export default function useBloodPuseressureMonitorScan() {
   const {
     bleManager,
     bluetoothState,
