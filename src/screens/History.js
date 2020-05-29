@@ -84,7 +84,7 @@ const DATA = [
 export default function History() {
   const [state] = React.useContext(BloodPressureContext);
   if (__DEV__) {
-    console.log(state);
+    console.log(JSON.stringify(state));
   }
   return (
     <SafeAreaView style={styles.container}>
@@ -93,8 +93,8 @@ export default function History() {
         <FlatList
           data={state.bloodPressureReadings}
           renderItem={({item}) => <SyncHeader data={item} />}
-          keyExtractor={(item) => {
-            return item.syncInfo.timeSyncStarted.toString();
+          keyExtractor={(item, key) => {
+            return `${item.syncInfo.timeSyncStarted.toString()}-${key}`;
           }}
         />
       ) : (

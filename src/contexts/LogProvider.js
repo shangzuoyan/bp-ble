@@ -5,7 +5,6 @@ const initialState = {
 };
 
 const logReducer = (state, action) => {
-  console.log(action.payload);
   switch (action.type) {
     case 'CLEAR':
       return initialState;

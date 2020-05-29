@@ -25,8 +25,9 @@ import * as BP_Utils from '../utils/bleUtils';
 
 let connectionTimeout;
 let notificationTimeout;
+
 export default function RegisterContainer({onCancel, onSuccess, device}) {
-  const [dispatch] = React.useContext(BloodPressureContext);
+  const [state, dispatch] = React.useContext(BloodPressureContext);
   const {error: logError, info: logInfo} = React.useContext(LogContext);
   const [timeoutError, setTimeoutError] = React.useState('');
   const {

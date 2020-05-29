@@ -13,12 +13,15 @@ export default function useBloodPressureService(onReceiveBloodPressure) {
   const [complete, setComplete] = React.useState(false);
 
   const _onReceiveBloodPressure = (_error, bloodChar) => {
-    logInfo(
-      `useBloodPressureService: Received blood pressure notification: ${bloodChar}(Base64)`,
-    );
+    logInfo('useBloodPressureService: Received blood pressure notification:');
     if (!_error) {
       const bloodCharValue = bloodChar.value;
+      logInfo(
+        `useBloodPressureService: Blood pressure value (base64):${bloodCharValue}`,
+      );
+
       const bloodMeasure = BP_Utils.parseBloodPressureMeasure(bloodCharValue);
+
       onReceiveBloodPressure(null, bloodMeasure);
     } else {
       logError(

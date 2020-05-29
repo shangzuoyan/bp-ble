@@ -69,6 +69,7 @@ export default function SyncContainer({onCancel, onSuccess}) {
       logInfo(
         `SyncContainer: Subscribe to notifications from monitor with id: ${device.id}`,
       );
+      clearTimeout(connectionTimeout);
 
       setStartedBloodPressure(true);
       // getBattery(device.id);
@@ -123,7 +124,6 @@ export default function SyncContainer({onCancel, onSuccess}) {
   }
 
   if (complete) {
-    logInfo('SyncInfo: sync complete');
     return (
       <Success
         onClose={onSuccess}
