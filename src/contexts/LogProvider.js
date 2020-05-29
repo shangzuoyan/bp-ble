@@ -5,6 +5,9 @@ const initialState = {
 };
 
 const logReducer = (state, action) => {
+  if (__DEV__) {
+    console.log(JSON.stringify(state), JSON.stringify(action));
+  }
   switch (action.type) {
     case 'CLEAR':
       return initialState;
@@ -53,7 +56,7 @@ export default ({children}) => {
   const error = (payload) => dispatch({type: 'ERROR', payload});
   const info = (payload) => dispatch({type: 'INFO', payload});
   const warn = (payload) => dispatch({type: 'WARN', payload});
-  const clear = (payload) => dispatch({type: 'CLEAR', payload});
+  const clear = (payload) => dispatch({type: 'CLEAR'});
 
   return (
     <LogContext.Provider value={{state, error, info, warn, clear}}>

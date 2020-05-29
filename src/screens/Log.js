@@ -37,7 +37,7 @@ export default function Log() {
       <FlatList
         data={state.log}
         renderItem={({item}) => <LogRow log={item} />}
-        keyExtractor={(item) => item.timeStamp.toString()}
+        keyExtractor={(item, key) => `${item.timeStamp.toString() - key}`}
       />
     </SafeAreaView>
   );
