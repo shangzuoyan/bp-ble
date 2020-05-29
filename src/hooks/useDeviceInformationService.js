@@ -20,10 +20,12 @@ export default function useDeviceInformationService() {
   const [data, setData] = React.useState(undefined);
 
   async function getDeviceInfo(deviceId) {
-    logInfo('Get device info ');
+    logInfo('useDeviceInformationService: Get device info ');
     setLoading(true);
     try {
-      logInfo('Getting HARDWARE_REVISION_CHARACTERISTIC');
+      logInfo(
+        'useDeviceInformationService: Getting HARDWARE_REVISION_CHARACTERISTIC',
+      );
 
       const hardwareRevisionChar = await bleManager.readCharacteristicForDevice(
         deviceId,
@@ -38,7 +40,10 @@ export default function useDeviceInformationService() {
 
       const hardwareRevision = hardwareRevisionBuffer.toString();
 
-      logInfo('Hardware Revision', hardwareRevision);
+      logInfo(
+        'useDeviceInformationService: Hardware Revision',
+        hardwareRevision,
+      );
 
       const modelNumberChar = await bleManager.readCharacteristicForDevice(
         deviceId,
@@ -50,7 +55,7 @@ export default function useDeviceInformationService() {
 
       const modelNumber = modelNumberBuffer.toString();
 
-      logInfo('Model Number', modelNumber);
+      logInfo('useDeviceInformationService: Model Number', modelNumber);
 
       const manufacturerNameChar = await bleManager.readCharacteristicForDevice(
         deviceId,
@@ -65,13 +70,20 @@ export default function useDeviceInformationService() {
 
       const manufacturerName = manufacturerNameBuffer.toString();
 
-      logInfo('Manufacturer Name', manufacturerName);
+      logInfo(
+        'useDeviceInformationService: Manufacturer Name',
+        manufacturerName,
+      );
 
       setData({deviceInfo: {manufacturerName, modelNumber, hardwareRevision}});
       setLoading(false);
       setError(undefined);
     } catch (err) {
-      logError(`Error getting device information: ${JSON.stringify(err)}`);
+      logError(
+        `useDeviceInformationServiceError getting device information: ${JSON.stringify(
+          err,
+        )}`,
+      );
       setError(err);
       setLoading(false);
       setData(undefined);

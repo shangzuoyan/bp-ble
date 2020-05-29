@@ -11,23 +11,25 @@ export default function useConnection() {
   const [data, setData] = React.useState(undefined);
 
   function connect(deviceId) {
-    logInfo(`Connect to monitor with deviceID:${deviceId}`);
+    logInfo(`useConnection: Connect to monitor with deviceID:${deviceId}`);
     setLoading(true);
 
     bleManager
       .connectToDevice(deviceId, {timeout: BLE_TIMEOUT_IN_SECONDS * 1000})
       .then((device) => {
-        logInfo(`Monitor connected with name: ${device.name}`);
+        logInfo(`useConnection: Monitor connected with name: ${device.name}`);
 
-        logInfo('Start Discovery of all services and characteristics');
+        logInfo(
+          'useConnection: Start Discovery of all services and characteristics',
+        );
         bleManager
           .discoverAllServicesAndCharacteristicsForDevice(deviceId)
           .then((results) => {
             bleManager.isDeviceConnected(device.id).then(async (status) => {
-              logInfo(`Monitor in connected status ${status}`);
+              logInfo(`useConnection: Monitor in connected status ${status}`);
 
               bleManager.servicesForDevice(device.id).then((services) => {
-                logInfo('Obtained all services');
+                logInfo('useConnection: Obtained all services');
               });
 
               setData({success: true});
@@ -37,7 +39,7 @@ export default function useConnection() {
           });
       })
       .catch((err) => {
-        logError(`Error connecting: ${JSON.stringify(err)}`);
+        logError(`useConnection: Error connecting: ${JSON.stringify(err)}`);
         setData(undefined);
         setLoading(false);
         setError({error: err});
@@ -45,8 +47,19 @@ export default function useConnection() {
   }
 
   function disconnect(deviceId) {
-    logInfo(`Disconnecting from monitor with deviceID:${deviceId}`);
-    bleManager.cancelDeviceConnection(deviceId);
+    logInfo(
+      `useConnection: Disconnecting from monitor with deviceID:${deviceId}`,
+    );
+    bleManager
+      .cancelDeviceConnection(deviceId)
+      .then((result) => {
+        logInfo(
+          `useConnection: Disconnected from monitor with deviceID:${deviceId}`,
+        );
+      })
+      .catch((err) => {
+        logError(`useConnection: Error Disconnecting: ${JSON.stringify(err)}`);
+      });
   }
 
   return {loading, error, data, connect, disconnect};

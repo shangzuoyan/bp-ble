@@ -13,20 +13,24 @@ export default function useBloodPressureService(onReceiveBloodPressure) {
   const [complete, setComplete] = React.useState(false);
 
   const _onReceiveBloodPressure = (_error, bloodChar) => {
-    logInfo(`Received blood pressure notification: ${bloodChar}(Base64)`);
+    logInfo(
+      `useBloodPressureService: Received blood pressure notification: ${bloodChar}(Base64)`,
+    );
     if (!_error) {
       const bloodCharValue = bloodChar.value;
       const bloodMeasure = BP_Utils.parseBloodPressureMeasure(bloodCharValue);
       onReceiveBloodPressure(null, bloodMeasure);
     } else {
-      logError(`Received blood pressure notification error: ${_error}`);
+      logError(
+        `useBloodPressureService: Received blood pressure notification error: ${_error}`,
+      );
       setComplete(true);
       onReceiveBloodPressure('Disconnected', null);
     }
   };
 
   function getBloodPressureNotifications(deviceId) {
-    logInfo('Begin blood pressure notifications');
+    logInfo('useBloodPressureService: Begin blood pressure notifications');
     const subscription = bleManager.monitorCharacteristicForDevice(
       deviceId,
       fullUUID(BP_Utils.BLE_BLOOD_PRESSURE_SERVICE),

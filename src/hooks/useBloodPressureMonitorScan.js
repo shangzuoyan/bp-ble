@@ -1,9 +1,10 @@
 import React from 'react';
 
-import * as BP_Utils from '../utils/bleUtils';
 import Context from '../contexts/BP_BLE_Context';
 
-export default () => {
+import * as BP_Utils from '../utils/bleUtils';
+
+export default function useBloodPressureMonitorScan() {
   const {
     bleManager,
     bluetoothState,
@@ -16,9 +17,11 @@ export default () => {
   const [data, setData] = React.useState(undefined);
 
   function scan() {
-    logInfo('Started Bluetooth Scan');
+    logInfo('useBloodPressureMonitorScan: Started Bluetooth Scan');
     if (!bleManager) {
-      logInfo('bleManager has not been initialized.');
+      logError(
+        'useBloodPressureMonitorScan: bleManager has not been initialized.',
+      );
       return;
     }
 
@@ -26,13 +29,13 @@ export default () => {
 
     const timeoutID = setTimeout(() => {
       logError(
-        `Scan timed out after ${BP_Utils.BLE_TIMEOUT_IN_SECONDS} seconds`,
+        `useBloodPressureMonitorScan: Scan timed out after ${BP_Utils.BLE_TIMEOUT_IN_SECONDS} seconds`,
       );
       bleManager.stopDeviceScan();
       setLoading(false);
       setData(undefined);
       setError({
-        error: `Scan timed out after ${BP_Utils.BLE_TIMEOUT_IN_SECONDS} seconds`,
+        error: `useBloodPressureMonitorScan: Scan timed out after ${BP_Utils.BLE_TIMEOUT_IN_SECONDS} seconds`,
       });
     }, BP_Utils.BLE_TIMEOUT_IN_SECONDS * 1000);
 
@@ -41,31 +44,39 @@ export default () => {
       null,
       async (_error, _device) => {
         if (_error) {
-          logError(`Bluetooth scan error: ${_error}`);
+          logError(
+            `useBloodPressureMonitorScan: Bluetooth scan error: ${_error}`,
+          );
           setError(_error);
           return;
         }
 
         logInfo(
-          `Found Monitor with Blood Pressure Service: Name: ${_device.name} LocalName: ${_device.localName} ManufacturerData: ${_device.manufacturerData} `,
+          `useBloodPressureMonitorScan: Found Monitor with Blood Pressure Service: Name: ${_device.name} LocalName: ${_device.localName} ManufacturerData: ${_device.manufacturerData}`,
         );
 
         const manuData = BP_Utils.parseDeviceManufacturerData(
           _device.manufacturerData,
         );
-        logInfo(`Manufacturer data decoded: ${JSON.stringify(manuData)}`);
+        logInfo(
+          `useBloodPressureMonitorScan: Manufacturer data decoded: ${JSON.stringify(
+            manuData,
+          )}`,
+        );
 
         const inPairMode = BP_Utils.isDeviceInPairingMode(manuData);
 
         if (!inPairMode) {
           logError(
-            `Monitor is not in pairing mode: manufacturerData flag: ${manuData.flag}`,
+            `useBloodPressureMonitorScan: Monitor is not in pairing mode: manufacturerData flag: ${manuData.flag}`,
           );
           return;
         }
 
         // if (_device.name && _device.name.startsWith('BP')) {
-        logInfo(`Monitor found in pairing mode with deviceId: ${_device.id}`);
+        logInfo(
+          `useBloodPressureMonitorScan: Monitor found in pairing mode with deviceId: ${_device.id}`,
+        );
         clearTimeout(timeoutID);
         setLoading(false);
         bleManager.stopDeviceScan();
@@ -82,4 +93,4 @@ export default () => {
   }
 
   return {loading, error, data, scan, bluetoothState};
-};
+}

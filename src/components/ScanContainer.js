@@ -28,8 +28,9 @@ export default function ScanContainer({onCancel, onSuccess}) {
     bluetoothState !== '' &&
     bluetoothState !== 'PoweredOn'
   ) {
+    setShowBluetoothAlert(true);
     Alert.alert(
-      'Enable Bluetooth',
+      'Bluetooth is disabled',
       'Enable Bluetooth in Settings',
       [{text: 'Ok', onPress: () => setShowBluetoothAlert(true)}],
       {cancelable: false},
@@ -42,7 +43,11 @@ export default function ScanContainer({onCancel, onSuccess}) {
 
   if (error) {
     return (
-      <Error onClose={onCancel} message="Cannot find blood pressure monitor" />
+      <Error
+        onClose={onCancel}
+        message="Cannot find blood pressure monitor"
+        error={error}
+      />
     );
   }
 
