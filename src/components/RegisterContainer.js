@@ -8,6 +8,7 @@ import {
 } from '../reducers/bloodPressureReducer';
 
 import BloodPressureContext from '../contexts/BloodPressureContext';
+import LogContext from '../contexts/LogContext';
 
 // import useBattery from '../hooks/useBatteryService';
 import useConnection from '../hooks/useConnection';
@@ -20,13 +21,20 @@ import Error from './Error';
 import Loading from './Loading';
 import Success from './Success';
 
+import * as BP_Utils from '../utils/bleUtils';
+
+let connectionTimeout;
+let notificationTimeout;
 export default function RegisterContainer({onCancel, onSuccess, device}) {
-  const [state, dispatch] = React.useContext(BloodPressureContext);
+  const [dispatch] = React.useContext(BloodPressureContext);
+  const {error: logError, info: logInfo} = React.useContext(LogContext);
+  const [timeoutError, setTimeoutError] = React.useState('');
   const {
     connect,
     error: errorConnecting,
     loading: connecting,
     data: connectionResult,
+    disconnect,
   } = useConnection();
 
   const {
@@ -51,15 +59,32 @@ export default function RegisterContainer({onCancel, onSuccess, device}) {
   const [startedBloodPressure, setStartedBloodPressure] = React.useState(false);
 
   useEffect(() => {
+    logInfo(
+      `RegisterContainer: Beginning Connect to monitor with id: ${device.id}`,
+    );
     connect(device.id);
     dispatch({
       type: NEW_BLOOD_PRESSURE_SYNC,
       payload: {timeSyncStarted: new Date()},
     });
+    //If connection is taking too long
+    connectionTimeout = setTimeout(() => {
+      logError(
+        `RegisterContainer: Timout attempting to connect to monitor with id: ${device.id}`,
+      );
+      setTimeoutError(
+        `Timout attempting to connect to monitor with id: ${device.id}`,
+      );
+      disconnect(device.id);
+    }, (BP_Utils.BLE_TIMEOUT_IN_SECONDS + 10) * 1000);
   }, []);
 
   useEffect(() => {
     if (connectionResult && connectionResult.success && !startedBloodPressure) {
+      logInfo(
+        `RegisterContainer: Subscribe to notifications from monitor with id: ${device.id}`,
+      );
+      clearTimeout(connectionTimeout);
       setStartedBloodPressure(true);
       // getBattery(device.id);
       // getUserIndex(device.id);
@@ -68,11 +93,25 @@ export default function RegisterContainer({onCancel, onSuccess, device}) {
       // getDeviceInfo(device.id);
       // getTime(device.id);
       // writeUserIndex(device.id);
+      notificationTimeout = setTimeout(() => {
+        logError(
+          `RegisterContainer: Timout waiting for blood pressure notification from monitor with id: ${device.id}`,
+        );
+        setTimeoutError(
+          `Timout waiting for blood pressure notification from monitor with id: ${device.id}`,
+        );
+        disconnect(device.id);
+      }, BP_Utils.BLE_TIMEOUT_IN_SECONDS * 1000);
     }
   }, [connectionResult]);
 
   function bloodPressureReceiveHandler(error, bloodPressureValue) {
-    console.log('bloodPressureReceiveHandler', bloodPressureValue);
+    logInfo(
+      `RegisterContainer: Received notification from monitor with id: ${
+        device.id
+      }.  Blood Pressure value: ${JSON.stringify(bloodPressureValue)}`,
+    );
+    clearTimeout(notificationTimeout);
     if (!error) {
       if (bloodPressureValue) {
         dispatch({
@@ -81,6 +120,9 @@ export default function RegisterContainer({onCancel, onSuccess, device}) {
         });
       }
     } else {
+      logError(
+        `RegisterContainer: Received notification error from monitor with id: ${device.id} Error: ${error}`,
+      );
       dispatch({
         type: DEVICE_IS_PAIRED,
         payload: device,
@@ -112,11 +154,14 @@ export default function RegisterContainer({onCancel, onSuccess, device}) {
   //   //   });
   //   // }
   // }
-  if (deviceError || errorConnecting) {
+  if (deviceError || errorConnecting || timeoutError) {
+    clearTimeout(connectionTimeout);
+    clearTimeout(notificationTimeout);
     return (
       <Error
         onClose={onCancel}
-        message="Error registering with blood pressure monitor.  Please try again."
+        error={deviceError || errorConnecting || timeoutError}
+        message="Error"
       />
     );
   }

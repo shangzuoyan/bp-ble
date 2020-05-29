@@ -6,9 +6,13 @@ export default function RegisterDevice({device, onCancel, onRegister}) {
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>Register Device</Text>
-      <Text style={styles.deviceText}>{device.name} </Text>
-      <Text style={styles.deviceText}>{device.localName}</Text>
-      <UserSelection />
+      <Text style={styles.deviceText}>
+        {device.name || device.localName || 'Blood Pressure Monitor'}{' '}
+      </Text>
+      <Text style={styles.deviceText}>{device.id}</Text>
+      {
+        // <UserSelection />
+      }
       <View style={styles.actionArea}>
         <Button title="Cancel" onPress={onCancel} color="#F95700FF" />
         <Button

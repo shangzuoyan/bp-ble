@@ -3,26 +3,30 @@ import {BleManager} from 'react-native-ble-plx';
 
 let bleManager;
 
-export default () => {
+export default (logError, logWarn, logInfo) => {
   const [bluetoothState, setBluetoothState] = React.useState('');
 
   React.useEffect(() => {
-    console.log('Initializing Bluetooth Manager');
-
+    logInfo('Initializing Bluetooth Manager');
     bleManager = new BleManager();
 
     const subscription = bleManager.onStateChange((state) => {
-      console.log('Bluetooth Manager onStateChange', state);
+      logInfo(`Bluetooth Manager onStateChange: ${state}`);
       setBluetoothState(state);
       if (state === 'PoweredOn') {
-        console.log('Bluetooth powered on');
+        logInfo('Bluetooth powered on');
       }
     }, true);
     return () => {
+      if (subscription) {
+        logInfo('Removing subscription to Bluetooth Manager state change');
+        subscription.remove();
+      }
       if (bleManager) {
+        logInfo('Destroying Bluetooth Manager');
         bleManager.destroy();
       }
-      if (subscription) subscription.remove();
+
       bleManager = null;
     };
   }, []);

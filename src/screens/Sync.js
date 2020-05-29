@@ -3,6 +3,7 @@ import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 
 import {UNREGISTER_DEVICE} from '../reducers/bloodPressureReducer';
 import BloodPressureContext from '../contexts/BloodPressureContext';
+import LogContext from '../contexts/LogContext';
 
 import BP_BLE_Provider from '../contexts/BP_BLE_Provider';
 
@@ -13,6 +14,8 @@ import RegisteredDevice from '../components/RegisteredDevice';
 
 export default function Sync({navigation}) {
   const [state, dispatch] = React.useContext(BloodPressureContext);
+  const {error, info, warn} = React.useContext(LogContext);
+
   const [
     isBpInteractionWindowOpen,
     setBPInteractionWindowOpen,
@@ -42,7 +45,7 @@ export default function Sync({navigation}) {
       <BP_MonitorInteractionModal
         visible={isBpInteractionWindowOpen}
         onRequestClose={onClose}>
-        <BP_BLE_Provider>
+        <BP_BLE_Provider error={error} warn={warn} info={info}>
           {isBpInteractionWindowOpen ? (
             syncMode ? (
               <SyncModeContainer onClose={onClose} onSuccess={onSuccess} />

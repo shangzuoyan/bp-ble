@@ -6,8 +6,6 @@ import {StyleSheet, Text, View, FlatList} from 'react-native';
 import BP_ReadingItem from './BP_ReadingItem';
 
 export default function SyncHeader(props) {
-  console.log('SuncHeader', props);
-
   const timeSyncStarted = props.data.syncInfo.timeSyncStarted;
   return (
     <View style={styles.container}>
@@ -19,7 +17,6 @@ export default function SyncHeader(props) {
           data={props.data.data}
           renderItem={({item}) => <BP_ReadingItem reading={item} />}
           keyExtractor={(item) => {
-            console.log(item);
             return item.timeStamp.toString();
           }}
         />

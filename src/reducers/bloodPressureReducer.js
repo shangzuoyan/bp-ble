@@ -9,10 +9,13 @@ const initialState = {
   isPaired: false,
   device: {},
   currentSync: {},
+  log: [],
 };
 
 export default function bloodPressureReducer(state = initialState, action) {
-  console.log('bloodPressureReducer', state, action);
+  if (__DEV__) {
+    console.log('bloodPressureReducer', state, action);
+  }
   switch (action.type) {
     case DEVICE_IS_PAIRED:
       return {...state, isPaired: true, device: action.payload};

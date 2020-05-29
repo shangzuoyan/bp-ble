@@ -13,6 +13,7 @@ export default ({children}) => {
     bloodPressureReducer,
     initialState,
   );
+
   return (
     <BloodPressureContext.Provider
       value={React.useMemo(() => [state, dispatch], [state, dispatch])}>

@@ -7,6 +7,7 @@ import {
 } from '../reducers/bloodPressureReducer';
 
 import BloodPressureContext from '../contexts/BloodPressureContext';
+import LogContext from '../contexts/LogContext';
 
 import useConnection from '../hooks/useConnection';
 // import useBattery from '../hooks/useBatteryService';
@@ -17,10 +18,19 @@ import Error from './Error';
 import Loading from './Loading';
 import Success from './Success';
 
+import * as BP_Utils from '../utils/bleUtils';
+
+let connectionTimeout;
+let notificationTimeout;
 export default function SyncContainer({onCancel, onSuccess}) {
   const [{device}, dispatch] = React.useContext(BloodPressureContext);
+  const {error: logError, info: logInfo} = React.useContext(LogContext);
+
+  const [timeoutError, setTimeoutError] = React.useState('');
+
   const {
     connect,
+    disconnect,
     error: errorConnecting,
     loading: connecting,
     data: connectionResult,
@@ -32,24 +42,58 @@ export default function SyncContainer({onCancel, onSuccess}) {
   );
   const [startedBloodPressure, setStartedBloodPressure] = React.useState(false);
   useEffect(() => {
+    logInfo(
+      `SyncContainer: Beginning Connect to monitor with id: ${device.id}`,
+    );
+
     connect(device.id);
     dispatch({
       type: NEW_BLOOD_PRESSURE_SYNC,
       payload: {timeSyncStarted: new Date()},
     });
+
+    //If connection is taking too long
+    connectionTimeout = setTimeout(() => {
+      logError(
+        `SyncContainer: Timout attempting to connect to monitor with id: ${device.id}`,
+      );
+      setTimeoutError(
+        `Timout attempting to connect to monitor with id: ${device.id}`,
+      );
+      disconnect(device.id);
+    }, (BP_Utils.BLE_TIMEOUT_IN_SECONDS + 10) * 1000);
   }, []);
 
   useEffect(() => {
     if (connectionResult && connectionResult.success && !startedBloodPressure) {
+      logInfo(
+        `SyncContainer: Subscribe to notifications from monitor with id: ${device.id}`,
+      );
+
       setStartedBloodPressure(true);
       // getBattery(device.id);
       getBloodPressureNotifications(device.id);
       // getTime(device.id);
+      notificationTimeout = setTimeout(() => {
+        logError(
+          `SyncContainer: Timout waiting for blood pressure notification from monitor with id: ${device.id}`,
+        );
+        setTimeoutError(
+          `Timout waiting for blood pressure notification from monitor with id: ${device.id}`,
+        );
+        disconnect(device.id);
+      }, BP_Utils.BLE_TIMEOUT_IN_SECONDS * 1000);
     }
   }, [connectionResult]);
 
   function bloodPressureReceiveHandler(error, bloodPressureValue) {
-    console.log('bloodPressureReceiveHandler', bloodPressureValue);
+    logInfo(
+      `SyncContainer: Received notification from monitor with id: ${
+        device.id
+      }.  Blood Pressure value: ${JSON.stringify(bloodPressureValue)}`,
+    );
+    clearTimeout(notificationTimeout);
+
     if (!error) {
       if (bloodPressureValue) {
         dispatch({
@@ -58,23 +102,28 @@ export default function SyncContainer({onCancel, onSuccess}) {
         });
       }
     } else {
+      logError(
+        `SyncContainer: Received notification error from monitor with id: ${device.id} Error: ${error}`,
+      );
       dispatch({
         type: SYNC_COMPLETE,
       });
     }
   }
-  if (errorConnecting) {
+  if (errorConnecting || timeoutError) {
+    clearTimeout(connectionTimeout);
+    clearTimeout(notificationTimeout);
     return (
       <Error
         onClose={onCancel}
+        error={errorConnecting || timeoutError}
         message="Cannot connect to blood pressure monitor"
       />
     );
   }
 
   if (complete) {
-    console.log('Syncing complete');
-
+    logInfo('SyncInfo: sync complete');
     return (
       <Success
         onClose={onSuccess}

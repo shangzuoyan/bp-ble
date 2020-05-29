@@ -20,7 +20,6 @@ export default function ScanContainer({onCancel, onSuccess}) {
   const [showBluetoothAlert, setShowBluetoothAlert] = React.useState(false);
 
   useEffect(() => {
-    console.log('ScanContainer called scan');
     scan();
   }, []);
 
@@ -29,8 +28,6 @@ export default function ScanContainer({onCancel, onSuccess}) {
     bluetoothState !== '' &&
     bluetoothState !== 'PoweredOn'
   ) {
-    console.log('ScanContainer: Bluetooth not powered on');
-
     Alert.alert(
       'Enable Bluetooth',
       'Enable Bluetooth in Settings',
@@ -44,15 +41,12 @@ export default function ScanContainer({onCancel, onSuccess}) {
   }
 
   if (error) {
-    console.log('ScanContainer', error);
     return (
       <Error onClose={onCancel} message="Cannot find blood pressure monitor" />
     );
   }
 
   if (data) {
-    console.log('ScanContainer', data);
-
     return (
       <RegisterDeviceContainer
         device={data.device}

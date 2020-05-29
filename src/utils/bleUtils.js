@@ -3,14 +3,13 @@ import {Buffer} from 'buffer';
 const IN_PAIRING_MODE = 8;
 const TIME_IS_SET = 1;
 
-export const BLE_TIMEOUT_IN_SECONDS = 10;
+export const BLE_TIMEOUT_IN_SECONDS = 30;
 export const BLE_BLOOD_PRESSURE_SERVICE = '1810';
 export const BLE_BP_CURRENT_TIME_SERVICE = '1805';
 export const BLE_BP_USER_DATA_SERVICE = '181C';
 
 export const parseBloodPressureMeasure = (bloodPressureMeasureBase64) => {
   let bloodPressureBuffer = Buffer.from(bloodPressureMeasureBase64, 'base64');
-  console.log(bloodPressureBuffer.toString('hex'));
   // bloodPressureBuffer = new Uint8Array(bloodPressureBuffer, 0, 1);
   const bloodPressureMeasure = {
     flags: null,
@@ -36,25 +35,21 @@ export const parseBloodPressureMeasure = (bloodPressureMeasureBase64) => {
 
   let timeStamp;
   if (!year) {
+    //For now set timestamp to current time if time is not set on bp reading.  TODO
     timeStamp = new Date();
   } else timeStamp = new Date(year, month, day, hour, minute, second);
 
   bloodPressureMeasure.timeStamp = timeStamp;
 
-  console.log('bloodPressureMeasure', bloodPressureMeasure);
   return bloodPressureMeasure;
 };
 
 export const parseDeviceManufacturerData = (deviceManufacturerDataBase64) => {
-  console.log('parseDeviceManufacturerData');
   let deviceManufacturerBuffer = Buffer.from(
     deviceManufacturerDataBase64,
     'base64',
   );
-  console.log(
-    'parseDeviceManufacturerData',
-    deviceManufacturerBuffer.toString('hex'),
-  );
+
   deviceManufacturerBuffer = new Uint8Array(deviceManufacturerBuffer, 0, 1);
 
   const deviceManufacturerData = {
@@ -66,10 +61,6 @@ export const parseDeviceManufacturerData = (deviceManufacturerDataBase64) => {
 };
 
 export const isDeviceInPairingMode = (deviceManufacturerData) => {
-  console.log(
-    'isDeviceInPairingMode',
-    deviceManufacturerData.flag & IN_PAIRING_MODE,
-  );
   return deviceManufacturerData.flag & IN_PAIRING_MODE;
 };
 
