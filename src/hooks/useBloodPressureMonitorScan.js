@@ -64,19 +64,19 @@ export default function useBloodPuseressureMonitorScan() {
           )}`,
         );
 
-        const inPairMode = BP_Utils.isDeviceInPairingMode(manuData);
+        // const inPairMode = BP_Utils.isDeviceInPairingMode(manuData);
 
-        if (!inPairMode) {
-          logError(
-            `useBloodPressureMonitorScan: Monitor is not in pairing mode: manufacturerData flag: ${manuData.flag}`,
-          );
-          return;
-        }
+        // if (!inPairMode) {
+        //   logError(
+        //     `useBloodPressureMonitorScan: Monitor is not in pairing mode: manufacturerData flag: ${manuData.flag}`,
+        //   );
+        //   return;
+        // }
 
-        // if (_device.name && _device.name.startsWith('BP')) {
-        logInfo(
-          `useBloodPressureMonitorScan: Monitor found in pairing mode with deviceId: ${_device.id}`,
-        );
+        // // if (_device.name && _device.name.startsWith('BP')) {
+        // logInfo(
+        //   `useBloodPressureMonitorScan: Monitor found in pairing mode with deviceId: ${_device.id}`,
+        // );
         clearTimeout(timeoutID);
         setLoading(false);
         bleManager.stopDeviceScan();
