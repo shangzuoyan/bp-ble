@@ -16,8 +16,8 @@ export default function SyncHeader(props) {
         <FlatList
           data={props.data.data}
           renderItem={({item}) => <BP_ReadingItem reading={item} />}
-          keyExtractor={(item) => {
-            return item.timeStamp.toString();
+          keyExtractor={(item, key) => {
+            return key.toString();
           }}
         />
       ) : (

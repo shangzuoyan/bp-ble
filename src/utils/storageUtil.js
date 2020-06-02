@@ -22,3 +22,15 @@ export const getRegistration = async () => {
     throw e;
   }
 };
+export const removeRegistration = async () => {
+  try {
+    const jsonValue = await AsyncStorage.removeRegistration(
+      BP_BLE_Registration,
+    );
+    return jsonValue != null ? JSON.parse(jsonValue) : null;
+  } catch (e) {
+    // read error
+    console.log(e);
+    throw e;
+  }
+};

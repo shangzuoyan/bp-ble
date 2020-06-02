@@ -78,7 +78,7 @@ export default function Sync({navigation}) {
           style={[styles.button, styles.buttonRegister]}
           onPress={openBpInteractionWindow}>
           <Text style={styles.buttonText}>
-            Register your new Omron Monitor now
+            Register your blood pressure monitor
           </Text>
         </TouchableOpacity>
       )}

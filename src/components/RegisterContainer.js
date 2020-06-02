@@ -38,17 +38,19 @@ export default function RegisterContainer({onCancel, onSuccess, device}) {
     disconnect,
   } = useConnection();
 
-  const {
-    getDeviceInfo,
-    loading: deviceServiceLoading,
-    error: deviceError,
-    data: deviceData,
-  } = useDeviceInformationService();
+  // const {
+  //   getDeviceInfo,
+  //   loading: deviceServiceLoading,
+  //   error: deviceError,
+  //   data: deviceData,
+  // } = useDeviceInformationService();
   // const {data: batteryLevel, getBattery} = useBattery();
   // const {data: time, getTime} = useTime();
-  const {complete, getBloodPressureNotifications} = useBloodPressureService(
-    bloodPressureReceiveHandler,
-  );
+  const {
+    complete,
+    error: bloodPressureServiceError,
+    getBloodPressureNotifications,
+  } = useBloodPressureService(bloodPressureReceiveHandler);
 
   // const {
   //   error: userError,
@@ -104,7 +106,7 @@ export default function RegisterContainer({onCancel, onSuccess, device}) {
         disconnect(device.id);
       }, BP_Utils.BLE_TIMEOUT_IN_SECONDS * 1000);
     }
-  }, [connectionResult]);
+  }, [connectionResult, device.id]);
 
   function bloodPressureReceiveHandler(error, bloodPressureValue) {
     logInfo(
@@ -124,10 +126,12 @@ export default function RegisterContainer({onCancel, onSuccess, device}) {
       logError(
         `RegisterContainer: Received notification error from monitor with id: ${device.id} Error: ${error}`,
       );
-      dispatch({
-        type: DEVICE_IS_PAIRED,
-        payload: device,
-      });
+      if (error === 'Disconnected') {
+        dispatch({
+          type: DEVICE_IS_PAIRED,
+          payload: device,
+        });
+      }
       dispatch({
         type: SYNC_COMPLETE,
       });
@@ -155,13 +159,13 @@ export default function RegisterContainer({onCancel, onSuccess, device}) {
   //   //   });
   //   // }
   // }
-  if (deviceError || errorConnecting || timeoutError) {
+  if (errorConnecting || timeoutError || bloodPressureServiceError) {
     clearTimeout(connectionTimeout);
     clearTimeout(notificationTimeout);
     return (
       <Error
         onClose={onCancel}
-        error={deviceError || errorConnecting || timeoutError}
+        error={errorConnecting || timeoutError || bloodPressureServiceError}
         message="Error"
       />
     );

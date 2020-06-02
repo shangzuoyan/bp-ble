@@ -28,14 +28,32 @@ export default function useConnection() {
             bleManager.isDeviceConnected(device.id).then(async (status) => {
               logInfo(`useConnection: Monitor in connected status ${status}`);
 
-              bleManager.servicesForDevice(device.id).then((services) => {
-                logInfo('useConnection: Obtained all services');
-              });
+              bleManager
+                .servicesForDevice(device.id)
+                .then((services) => {
+                  logInfo('useConnection: Obtained all services');
+                })
+                .catch((_err) => {
+                  logError(
+                    `useConnection: Error connecting: ${JSON.stringify(_err)}`,
+                  );
+                  setData(undefined);
+                  setLoading(false);
+                  setError({error: _err});
+                });
 
               setData({success: true});
               setLoading(false);
               setError(false);
             });
+          })
+          .catch((_err) => {
+            logError(
+              `useConnection: Error connecting: ${JSON.stringify(_err)}`,
+            );
+            setData(undefined);
+            setLoading(false);
+            setError({error: _err});
           });
       })
       .catch((err) => {

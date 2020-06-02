@@ -19,14 +19,13 @@ export const BLE_BP_USER_DATA_SERVICE = '181C';
 
 export const parseBloodPressureMeasure = (bloodPressureMeasureBase64) => {
   const bloodPressureMeasure = {
-    flags: null,
-    systolic: null,
-    diastolic: null,
-    meanPressure: null,
-    timeStamp: null,
-    pulseRate: null,
-    userIndex: null,
-    bloodPressureUnits: null,
+    flags: undefined,
+    systolic: undefined,
+    diastolic: undefined,
+    timeStamp: undefined,
+    pulseRate: undefined,
+    userIndex: undefined,
+    bloodPressureUnits: undefined,
     timeStampPresent: false,
     pulseRatePresent: false,
     userIdPresent: false,
@@ -45,25 +44,25 @@ export const parseBloodPressureMeasure = (bloodPressureMeasureBase64) => {
     return bloodPressureMeasure;
   }
   // bloodPressureBuffer = new Uint8Array(bloodPressureBuffer, 0, 1);
-
-  if (bloodPressureMeasure.byteLength >= 1) {
+  console.log(bloodPressureBuffer[0], bloodPressureMeasure.byteLength);
+  if (bloodPressureBuffer.byteLength >= 1) {
     bloodPressureMeasure.flags = bloodPressureBuffer[0];
 
     bloodPressureMeasure.bloodPressureUnits =
       bloodPressureMeasure.flags & BLOOD_PRESSURE_UNITS ? 'kPa' : 'mmHg';
     bloodPressureMeasure.timeStampPresent =
-      bloodPressureMeasure.flags & TIME_STAMP_PRESENT;
+      bloodPressureMeasure.flags & TIME_STAMP_PRESENT ? true : false;
     bloodPressureMeasure.pulseRatePresent =
-      bloodPressureMeasure.flags & PULSE_RATE_PRESENT;
+      bloodPressureMeasure.flags & PULSE_RATE_PRESENT ? true : false;
     bloodPressureMeasure.userIdPresent =
-      bloodPressureMeasure.flags & USER_ID_PRESENT;
+      bloodPressureMeasure.flags & USER_ID_PRESENT ? true : false;
     bloodPressureMeasure.measurementStatusPresent =
-      bloodPressureMeasure.flags & MEASUREMENT_STATUS_PRESENT;
+      bloodPressureMeasure.flags & MEASUREMENT_STATUS_PRESENT ? true : false;
   } else {
     return bloodPressureMeasure;
   }
-
-  if (bloodPressureMeasure.byteLength >= 5) {
+  console.log('bloodPressureMeasure', bloodPressureMeasure.flags);
+  if (bloodPressureBuffer.byteLength >= 5) {
     bloodPressureMeasure.systolic = bloodPressureBuffer.readUInt16LE(1);
     bloodPressureMeasure.diastolic = bloodPressureBuffer.readUInt16LE(3);
   } else {
@@ -77,25 +76,28 @@ export const parseBloodPressureMeasure = (bloodPressureMeasureBase64) => {
     bloodPressureBuffer.byteLength >= 13
   ) {
     const year = bloodPressureBuffer.readUInt16LE(7);
-    const month = bloodPressureBuffer.readUInt8(9) - 1;
-    const day = bloodPressureBuffer.readUInt8(10);
-    const hour = bloodPressureBuffer.readUInt8(11);
-    const minute = bloodPressureBuffer.readUInt8(12);
-    const second = bloodPressureBuffer.readUInt8(13);
-    timeStamp = new Date(year, month, day, hour, minute, second);
-    bloodPressureMeasure.timeStamp = timeStamp;
+
+    if (year !== 0) {
+      const month = bloodPressureBuffer.readUInt8(9) - 1;
+      const day = bloodPressureBuffer.readUInt8(10);
+      const hour = bloodPressureBuffer.readUInt8(11);
+      const minute = bloodPressureBuffer.readUInt8(12);
+      const second = bloodPressureBuffer.readUInt8(13);
+      timeStamp = new Date(year, month, day, hour, minute, second);
+      bloodPressureMeasure.timeStamp = timeStamp;
+    }
   }
 
   if (
     bloodPressureMeasure.pulseRatePresent &&
-    bloodPressureMeasure.byteLength >= 15
+    bloodPressureBuffer.byteLength >= 15
   ) {
     bloodPressureMeasure.pulseRate = bloodPressureBuffer.readUInt16LE(14);
   }
 
   if (
     bloodPressureMeasure.userIdPresent &&
-    bloodPressureMeasure.byteLength >= 16
+    bloodPressureBuffer.byteLength >= 16
   ) {
     bloodPressureMeasure.userIndex = bloodPressureBuffer.readUInt8(16);
   }

@@ -17,9 +17,7 @@ export default function History() {
         <FlatList
           data={state.bloodPressureReadings}
           renderItem={({item}) => <SyncData data={item} />}
-          keyExtractor={(item, key) => {
-            return `${item.syncInfo.timeSyncStarted.toString()}-${key}`;
-          }}
+          keyExtractor={(item, key) => key.toString()}
         />
       ) : (
         <Text style={styles.message}>

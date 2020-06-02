@@ -83,7 +83,7 @@ export default function useBloodPuseressureMonitorScan() {
         setData({
           device: {
             id: _device.id,
-            name: _device.name,
+            name: _device.name ? _device.name : 'Blood Pressure Monitor',
             localName: _device.localName,
           },
         });

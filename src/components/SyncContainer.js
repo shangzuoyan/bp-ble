@@ -37,9 +37,11 @@ export default function SyncContainer({onCancel, onSuccess}) {
   } = useConnection();
   // const {data: batteryLevel, getBattery} = useBattery();
   // const {data: time, getTime} = useTime();
-  const {complete, getBloodPressureNotifications} = useBloodPressureService(
-    bloodPressureReceiveHandler,
-  );
+  const {
+    complete,
+    error: bloodPressureServiceError,
+    getBloodPressureNotifications,
+  } = useBloodPressureService(bloodPressureReceiveHandler);
   const [startedBloodPressure, setStartedBloodPressure] = React.useState(false);
   useEffect(() => {
     logInfo(
@@ -103,21 +105,25 @@ export default function SyncContainer({onCancel, onSuccess}) {
         });
       }
     } else {
-      logError(
-        `SyncContainer: Received notification error from monitor with id: ${device.id} Error: ${error}`,
-      );
+      if (error !== 'Disconnected')
+        logError(
+          `SyncContainer: Received notification error from monitor with id: ${device.id} Error: ${error}`,
+        );
+      else {
+        logError(`SyncContainer: Device ${error}`);
+      }
       dispatch({
         type: SYNC_COMPLETE,
       });
     }
   }
-  if (errorConnecting || timeoutError) {
+  if (errorConnecting || timeoutError || bloodPressureServiceError) {
     clearTimeout(connectionTimeout);
     clearTimeout(notificationTimeout);
     return (
       <Error
         onClose={onCancel}
-        error={errorConnecting || timeoutError}
+        error={errorConnecting || timeoutError || bloodPressureServiceError}
         message="Cannot connect to blood pressure monitor"
       />
     );

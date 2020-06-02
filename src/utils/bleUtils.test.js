@@ -40,16 +40,15 @@ describe('test parseDeviceManufacturerData', () => {
   });
 });
 
-describe('test parseBloodPressureMeasure', () => {
+describe.only('test parseBloodPressureMeasure', () => {
   const defaultBloodPressureObj = {
-    flags: null,
-    systolic: null,
-    diastolic: null,
-    meanPressure: null,
-    timeStamp: null,
-    pulseRate: null,
-    userIndex: null,
-    bloodPressureUnits: null,
+    flags: undefined,
+    systolic: undefined,
+    diastolic: undefined,
+    timeStamp: undefined,
+    pulseRate: undefined,
+    userIndex: undefined,
+    bloodPressureUnits: undefined,
     timeStampPresent: false,
     pulseRatePresent: false,
     userIdPresent: false,
@@ -67,5 +66,26 @@ describe('test parseBloodPressureMeasure', () => {
   test('must not crash when  blood pressure input is junky', () => {
     const result = BleUtils.parseBloodPressureMeasure('poiop234o234');
     expect(result).toMatchObject(defaultBloodPressureObj);
+  });
+
+  test.only('must parse blood pressure value correctly for valid base64 input', () => {
+    let value = 'HogAZABwAOQHBgEQNRBWAAEAAA==';
+    const expectedBloodPressure = {
+      flags: 0x1e,
+      systolic: 136,
+      diastolic: 100,
+      timeStamp: '2020-06-01T23:53:16.000Z',
+      pulseRate: 86,
+      userIndex: 1,
+      bloodPressureUnits: 'mmHg',
+      timeStampPresent: true,
+      pulseRatePresent: true,
+      userIdPresent: true,
+      measurementStatusPresent: true,
+    };
+    const result = BleUtils.parseBloodPressureMeasure(value);
+    const {timeStamp, ...rest} = expectedBloodPressure;
+    expect(result).toMatchObject(rest);
+    expect(Date(result.timeStamp)).toBe(Date(expectedBloodPressure.timeStamp));
   });
 });

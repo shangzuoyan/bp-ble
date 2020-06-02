@@ -1,5 +1,5 @@
 import React from 'react';
-import {fullUUID} from 'react-native-ble-plx';
+import {fullUUID, BleErrorCode} from 'react-native-ble-plx';
 
 import Context from '../contexts/BP_BLE_Context';
 
@@ -11,6 +11,7 @@ export default function useBloodPressureService(onReceiveBloodPressure) {
   const {bleManager, logError, logInfo, logWarn} = React.useContext(Context);
 
   const [complete, setComplete] = React.useState(false);
+  const [error, setError] = React.useState(undefined);
 
   const _onReceiveBloodPressure = (_error, bloodChar) => {
     logInfo('useBloodPressureService: Received blood pressure notification:');
@@ -24,23 +25,43 @@ export default function useBloodPressureService(onReceiveBloodPressure) {
 
       onReceiveBloodPressure(null, bloodMeasure);
     } else {
-      logError(
-        `useBloodPressureService: Received blood pressure notification error: ${_error}`,
-      );
       setComplete(true);
-      onReceiveBloodPressure('Disconnected', null);
+      if (_error.errorCode === BleErrorCode.DeviceDisconnected) {
+        logInfo(
+          `useBloodPressureService: Blood pressure monitor disconnected: ${JSON.stringify(
+            _error,
+          )}`,
+        );
+        onReceiveBloodPressure('Disconnected', null);
+      } else {
+        logError(
+          `useBloodPressureService: Received blood pressure notification error: ${JSON.stringify(
+            _error,
+          )}`,
+        );
+        setError(_error);
+      }
     }
   };
 
   function getBloodPressureNotifications(deviceId) {
     logInfo('useBloodPressureService: Begin blood pressure notifications');
-    const subscription = bleManager.monitorCharacteristicForDevice(
-      deviceId,
-      fullUUID(BP_Utils.BLE_BLOOD_PRESSURE_SERVICE),
-      fullUUID(BLE_BLOOD_PRESSURE_MEASURE_CHARACTERISTIC),
-      _onReceiveBloodPressure,
-    );
+    try {
+      bleManager.monitorCharacteristicForDevice(
+        deviceId,
+        fullUUID(BP_Utils.BLE_BLOOD_PRESSURE_SERVICE),
+        fullUUID(BLE_BLOOD_PRESSURE_MEASURE_CHARACTERISTIC),
+        _onReceiveBloodPressure,
+      );
+    } catch (err) {
+      logError(
+        `useBloodPressureService: Received blood pressure notification error: ${JSON.stringify(
+          err,
+        )}`,
+      );
+      setError(err);
+    }
   }
 
-  return {complete, getBloodPressureNotifications};
+  return {complete, error, getBloodPressureNotifications};
 }

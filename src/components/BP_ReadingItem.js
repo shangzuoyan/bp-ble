@@ -6,9 +6,11 @@ export default function BP_ReadingItem({reading}) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.dateElement}>{`Time of reading: ${moment(
-        timeStamp,
-      ).format('MMMM DD, YYYY hh:mm:A')}`}</Text>
+      {timeStamp ? (
+        <Text style={styles.dateElement}>{`Time of reading: ${moment(
+          timeStamp,
+        ).format('MMMM DD, YYYY hh:mm:A')}`}</Text>
+      ) : null}
       <Text style={styles.element}>{`Systolic: ${systolic}`}</Text>
       <Text style={styles.element}>{`Diastolic: ${diastolic}`}</Text>
       <Text style={styles.element}>{`Pulse: ${pulseRate}`}</Text>
