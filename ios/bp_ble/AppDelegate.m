@@ -8,6 +8,9 @@
 #import <AppCenterReactNativeAnalytics.h>
 #import <AppCenterReactNativeCrashes.h>
 
+#import <UMCore/UMModuleRegistry.h>
+#import <UMReactNativeAdapter/UMNativeModulesProxy.h>
+#import <UMReactNativeAdapter/UMModuleRegistryAdapter.h>
 
 #if DEBUG
 #import <FlipperKit/FlipperClient.h>
@@ -36,6 +39,8 @@ static void InitializeFlipper(UIApplication *application) {
   InitializeFlipper(application);
 #endif
 
+  self.moduleRegistryAdapter = [[UMModuleRegistryAdapter alloc] initWithModuleRegistryProvider:[[UMModuleRegistryProvider alloc] init]];
+
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
                                                    moduleName:@"bp_ble"
@@ -57,6 +62,13 @@ static void InitializeFlipper(UIApplication *application) {
   [AppCenterReactNativeCrashes registerWithAutomaticProcessing];
 
   return YES;
+}
+- (NSArray<id<RCTBridgeModule>> *)extraModulesForBridge:(RCTBridge *)bridge
+{
+  NSArray<id<RCTBridgeModule>> *extraModules = [_moduleRegistryAdapter extraModulesForBridge:bridge];
+  // You can inject any extra modules that you would like here, more information at:
+  // https://facebook.github.io/react-native/docs/native-modules-ios.html#dependency-injection
+  return extraModules;
 }
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
