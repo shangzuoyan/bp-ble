@@ -6,6 +6,7 @@ import {
   FlatList,
   SafeAreaView,
   TouchableOpacity,
+  ActionSheetIOS,
 } from 'react-native';
 import moment from 'moment';
 import {FileSystem} from 'react-native-unimodules';
@@ -29,19 +30,33 @@ export default function Log() {
   const {state, clear} = React.useContext(LogContext);
 
   async function handleLogToFile() {
-    const file = `${FileSystem.documentDirectory}/Log${moment().format(
-      'YYYYMMDDHHmmss',
-    )}.txt`;
+    const fileName = `Log${moment().format('YYYYMMDDHHmmss')}.txt`;
+
+    const file = `${FileSystem.documentDirectory}/${fileName}`;
 
     const log = state.log.map(
       (logItem) =>
         moment(logItem.timeStamp).format('YYYY-MM-DD HH:mm:ss.SSS') +
-        ':' +
+        ' - ' +
         logItem.log,
     );
     const fileContents = log.join('\n');
     await FileSystem.writeAsStringAsync(file, fileContents);
+    ActionSheetIOS.showShareActionSheetWithOptions(
+      {
+        url: file,
+        message: fileName,
+        subject: 'Bluetooth Log File',
+      },
+      (error) => {
+        if (__DEV__) console.log(error);
+      },
+      (success, method) => {
+        if (__DEV__) console.log(success, method);
+      },
+    );
   }
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerRow}>
