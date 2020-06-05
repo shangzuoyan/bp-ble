@@ -4,14 +4,6 @@ describe('test parseDeviceManufacturerData', () => {
   let validDeviceManufacturerData = 'DgIBCS8AAg0AA==';
   let junkDeviceManufacturerData = '0jo';
 
-  let emptyDeviceManufacturerData = {
-    companyIdentifierKey: undefined,
-    flag: 0,
-    inPairingMode: false,
-    isTimeSet: false,
-    numUsers: 0,
-  };
-
   let deviceManufacturerDataResult = {
     companyIdentifierKey: '020e',
     flag: 9,
@@ -22,7 +14,7 @@ describe('test parseDeviceManufacturerData', () => {
 
   test('must return empty device manufacturer data object manufacturerdata is null', () => {
     const result = BleUtils.parseDeviceManufacturerData(null);
-    expect(result).toMatchObject(emptyDeviceManufacturerData);
+    expect(result).toBe(undefined);
   });
 
   test('must return a populated manufacturer object', () => {
@@ -35,12 +27,11 @@ describe('test parseDeviceManufacturerData', () => {
     const result = BleUtils.parseDeviceManufacturerData(
       junkDeviceManufacturerData,
     );
-    expect(result).toHaveProperty('companyIdentifierKey');
-    expect(result.inPairingMode).toBe(false);
+    expect(result.inPairingMode).toBe(undefined);
   });
 });
 
-describe.only('test parseBloodPressureMeasure', () => {
+describe('test parseBloodPressureMeasure', () => {
   const defaultBloodPressureObj = {
     flags: undefined,
     systolic: undefined,
@@ -64,11 +55,11 @@ describe.only('test parseBloodPressureMeasure', () => {
     expect(result).toMatchObject(defaultBloodPressureObj);
   });
   test('must not crash when  blood pressure input is junky', () => {
-    const result = BleUtils.parseBloodPressureMeasure('poiop234o234');
+    const result = BleUtils.parseBloodPressureMeasure('*&*&');
     expect(result).toMatchObject(defaultBloodPressureObj);
   });
 
-  test.only('must parse blood pressure value correctly for valid base64 input', () => {
+  test('must parse blood pressure value correctly for valid base64 input', () => {
     let value = 'HogAZABwAOQHBgEQNRBWAAEAAA==';
     const expectedBloodPressure = {
       flags: 0x1e,

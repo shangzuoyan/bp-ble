@@ -5,9 +5,9 @@ const initialState = {
 };
 
 const logReducer = (state, action) => {
-  if (__DEV__) {
-    console.log(JSON.stringify(state), JSON.stringify(action));
-  }
+  // if (__DEV__) {
+  //   console.log(JSON.stringify(state), JSON.stringify(action));
+  // }
   switch (action.type) {
     case 'CLEAR':
       return initialState;

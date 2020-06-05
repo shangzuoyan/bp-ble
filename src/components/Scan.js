@@ -6,7 +6,7 @@ export default function Scan({onClose, onScan}) {
     <View style={styles.container}>
       <Text style={styles.headerText}>Registration </Text>
       <Text style={styles.instructionsText}>
-        Press the bluetooth button on your monitor until you see a flashing P
+        Press the bluetooth button on your monitor until you see a flashing Ps
         sign on your monitor screen
       </Text>
       <View style={styles.actionArea}>

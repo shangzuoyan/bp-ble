@@ -4,9 +4,8 @@ import {Text, View, Button, StyleSheet} from 'react-native';
 export default function RegisteredDevice({device, onUnregister}) {
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>Registered Device</Text>
+      <Text style={styles.headerText}>Blood Pressure Monitor</Text>
       <Text style={styles.deviceText}>{device.name} </Text>
-      <Text style={styles.deviceText}>{device.localName}</Text>
       <Button title="Unregister" onPress={onUnregister} color="#00A4CCFF" />
     </View>
   );
@@ -26,7 +25,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'gray',
     marginBottom: 5,
-    fontSize: 24,
+    fontSize: 20,
   },
   deviceText: {
     textAlign: 'center',

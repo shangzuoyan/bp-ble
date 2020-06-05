@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, ActivityIndicator, Text} from 'react-native';
+import {StyleSheet, View, ActivityIndicator, Text, Button} from 'react-native';
 
 export default function Loading({message}) {
   return (

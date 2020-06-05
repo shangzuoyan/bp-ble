@@ -29,7 +29,7 @@ let notificationTimeout;
 export default function RegisterContainer({onCancel, onSuccess, device}) {
   const [state, dispatch] = React.useContext(BloodPressureContext);
   const {error: logError, info: logInfo} = React.useContext(LogContext);
-  const [timeoutError, setTimeoutError] = React.useState('');
+  const [timeoutError, setTimeoutError] = React.useState(undefined);
   const {
     connect,
     error: errorConnecting,
@@ -62,9 +62,7 @@ export default function RegisterContainer({onCancel, onSuccess, device}) {
   const [startedBloodPressure, setStartedBloodPressure] = React.useState(false);
 
   useEffect(() => {
-    logInfo(
-      `RegisterContainer: Beginning Connect to monitor with id: ${device.id}`,
-    );
+    logInfo(`RegisterContainer: Connecting to monitor with id: ${device.id})}`);
     connect(device.id);
     dispatch({
       type: NEW_BLOOD_PRESSURE_SYNC,
@@ -73,13 +71,13 @@ export default function RegisterContainer({onCancel, onSuccess, device}) {
     //If connection is taking too long
     connectionTimeout = setTimeout(() => {
       logError(
-        `RegisterContainer: Timout attempting to connect to monitor with id: ${device.id}`,
+        `RegisterContainer: Timeout attempting to connect to monitor with id: ${device.id}`,
       );
       setTimeoutError(
         `Timout attempting to connect to monitor with id: ${device.id}`,
       );
       disconnect(device.id);
-    }, (BP_Utils.BLE_TIMEOUT_IN_SECONDS + 10) * 1000);
+    }, (BP_Utils.BLE_CONNECTION_TIMEOUT_IN_SECONDS + 10) * 1000);
   }, []);
 
   useEffect(() => {
@@ -98,21 +96,23 @@ export default function RegisterContainer({onCancel, onSuccess, device}) {
       // writeUserIndex(device.id);
       notificationTimeout = setTimeout(() => {
         logError(
-          `RegisterContainer: Timout waiting for blood pressure notification from monitor with id: ${device.id}`,
+          `RegisterContainer: Timeout waiting for blood pressure notification from monitor with id: ${device.id}`,
         );
         setTimeoutError(
-          `Timout waiting for blood pressure notification from monitor with id: ${device.id}`,
+          `Timeout waiting for blood pressure notification from monitor with id: ${device.id}`,
         );
         disconnect(device.id);
-      }, BP_Utils.BLE_TIMEOUT_IN_SECONDS * 1000);
+      }, BP_Utils.BLE_CONNECTION_TIMEOUT_IN_SECONDS * 1000);
     }
-  }, [connectionResult, device.id]);
+  }, [connectionResult]);
 
   function bloodPressureReceiveHandler(error, bloodPressureValue) {
     logInfo(
       `RegisterContainer: Received notification from monitor with id: ${
         device.id
-      }.  Blood Pressure value: ${JSON.stringify(bloodPressureValue)}`,
+      }.  Blood Pressure value: ${JSON.stringify(
+        bloodPressureValue,
+      )}. Error: ${error}`,
     );
     clearTimeout(notificationTimeout);
     if (!error) {
@@ -123,13 +123,10 @@ export default function RegisterContainer({onCancel, onSuccess, device}) {
         });
       }
     } else {
-      logError(
-        `RegisterContainer: Received notification error from monitor with id: ${device.id} Error: ${error}`,
-      );
       if (error === 'Disconnected') {
         dispatch({
           type: DEVICE_IS_PAIRED,
-          payload: device,
+          payload: {id: device.id, name: connectionResult.name || device.name},
         });
       }
       dispatch({

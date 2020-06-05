@@ -13,13 +13,13 @@ const initialState = {
 };
 
 export default function bloodPressureReducer(state = initialState, action) {
-  if (__DEV__) {
-    console.log(
-      'bloodPressureReducer',
-      JSON.stringify(state),
-      JSON.stringify(action),
-    );
-  }
+  // if (__DEV__) {
+  //   console.log(
+  //     'bloodPressureReducer',
+  //     JSON.stringify(state),
+  //     JSON.stringify(action),
+  //   );
+  // }
   switch (action.type) {
     case DEVICE_IS_PAIRED:
       return {...state, isPaired: true, device: action.payload};

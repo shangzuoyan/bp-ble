@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 
-import {Alert} from 'react-native';
+import {Alert, Linking} from 'react-native';
 
 import useBloodPressureMonitorScan from '../hooks/useBloodPressureMonitorScan';
 
@@ -31,30 +31,26 @@ export default function ScanContainer({onCancel, onSuccess}) {
     setShowBluetoothAlert(true);
     Alert.alert(
       'Bluetooth is disabled',
-      'Enable Bluetooth in Settings',
-      [{text: 'Ok', onPress: () => setShowBluetoothAlert(true)}],
+      'Bluetooth is turned off or you have not allowed Bluetooth access',
+      [{text: 'OK', onPress: () => onCancel()}],
       {cancelable: false},
     );
   }
 
   if (loading) {
-    return <Loading message="Scanning" />;
+    return <Loading message="Scanning ..." />;
   }
 
   if (error) {
     return (
-      <Error
-        onClose={onCancel}
-        message="Cannot find blood pressure monitor"
-        error={error}
-      />
+      <Error onClose={onCancel} message="Cannot find blood pressure monitor" />
     );
   }
 
-  if (data) {
+  if (data && Object.keys(data).length > 0) {
     return (
       <RegisterDeviceContainer
-        device={data.device}
+        devices={data}
         onCancel={onCancel}
         onSuccess={onSuccess}
       />

@@ -26,7 +26,7 @@ export default function SyncContainer({onCancel, onSuccess}) {
   const [{device}, dispatch] = React.useContext(BloodPressureContext);
   const {error: logError, info: logInfo} = React.useContext(LogContext);
 
-  const [timeoutError, setTimeoutError] = React.useState('');
+  const [timeoutError, setTimeoutError] = React.useState(undefined);
 
   const {
     connect,
@@ -34,6 +34,7 @@ export default function SyncContainer({onCancel, onSuccess}) {
     error: errorConnecting,
     loading: connecting,
     data: connectionResult,
+    bluetoothState,
   } = useConnection();
   // const {data: batteryLevel, getBattery} = useBattery();
   // const {data: time, getTime} = useTime();
@@ -41,8 +42,10 @@ export default function SyncContainer({onCancel, onSuccess}) {
     complete,
     error: bloodPressureServiceError,
     getBloodPressureNotifications,
+    cancelNotifications,
   } = useBloodPressureService(bloodPressureReceiveHandler);
   const [startedBloodPressure, setStartedBloodPressure] = React.useState(false);
+
   useEffect(() => {
     logInfo(
       `SyncContainer: Beginning Connect to monitor with id: ${device.id}`,
@@ -63,8 +66,8 @@ export default function SyncContainer({onCancel, onSuccess}) {
         `Timout attempting to connect to monitor with id: ${device.id}`,
       );
       disconnect(device.id);
-    }, (BP_Utils.BLE_TIMEOUT_IN_SECONDS + 10) * 1000);
-  }, []);
+    }, (BP_Utils.BLE_CONNECTION_TIMEOUT_IN_SECONDS + 10) * 1000);
+  }, [device]);
 
   useEffect(() => {
     if (connectionResult && connectionResult.success && !startedBloodPressure) {
@@ -87,13 +90,15 @@ export default function SyncContainer({onCancel, onSuccess}) {
         disconnect(device.id);
       }, BP_Utils.BLE_TIMEOUT_IN_SECONDS * 1000);
     }
-  }, [connectionResult]);
+  }, [connectionResult, device]);
 
   function bloodPressureReceiveHandler(error, bloodPressureValue) {
     logInfo(
       `SyncContainer: Received notification from monitor with id: ${
         device.id
-      }.  Blood Pressure value: ${JSON.stringify(bloodPressureValue)}`,
+      }.  Blood Pressure value: ${JSON.stringify(
+        bloodPressureValue,
+      )}. Error: ${error}`,
     );
     clearTimeout(notificationTimeout);
 
@@ -105,13 +110,6 @@ export default function SyncContainer({onCancel, onSuccess}) {
         });
       }
     } else {
-      if (error !== 'Disconnected')
-        logError(
-          `SyncContainer: Received notification error from monitor with id: ${device.id} Error: ${error}`,
-        );
-      else {
-        logError(`SyncContainer: Device ${error}`);
-      }
       dispatch({
         type: SYNC_COMPLETE,
       });

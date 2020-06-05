@@ -1,11 +1,12 @@
 import React from 'react';
 
 import Context from '../contexts/BP_BLE_Context';
-
-import {BLE_TIMEOUT_IN_SECONDS} from '../utils/bleUtils';
+import * as BL_Utils from '../utils/bleUtils';
 
 export default function useConnection() {
-  const {bleManager, logError, logWarn, logInfo} = React.useContext(Context);
+  const {bleManager, logError, logInfo, bluetoothState} = React.useContext(
+    Context,
+  );
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(undefined);
   const [data, setData] = React.useState(undefined);
@@ -15,9 +16,17 @@ export default function useConnection() {
     setLoading(true);
 
     bleManager
-      .connectToDevice(deviceId, {timeout: BLE_TIMEOUT_IN_SECONDS * 1000})
+      .connectToDevice(deviceId, {
+        timeout: BL_Utils.BLE_CONNECTION_TIMEOUT_IN_SECONDS * 1000,
+      })
       .then((device) => {
-        logInfo(`useConnection: Monitor connected with name: ${device.name}`);
+        logInfo(
+          `useConnection: Monitor connected to device: ${JSON.stringify({
+            id: device.id,
+            name: device.name,
+            localName: device.localName,
+          })}`,
+        );
 
         logInfo(
           'useConnection: Start Discovery of all services and characteristics',
@@ -42,9 +51,9 @@ export default function useConnection() {
                   setError({error: _err});
                 });
 
-              setData({success: true});
+              setData({success: true, name: device.name});
               setLoading(false);
-              setError(false);
+              setError(undefined);
             });
           })
           .catch((_err) => {
@@ -80,5 +89,5 @@ export default function useConnection() {
       });
   }
 
-  return {loading, error, data, connect, disconnect};
+  return {loading, error, data, connect, disconnect, bluetoothState};
 }

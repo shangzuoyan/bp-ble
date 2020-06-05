@@ -12,7 +12,9 @@ const MEASUREMENT_STATUS_PRESENT = 1 << 4;
 
 export const OMRON_COMPANY_IDENTIFIER_KEY = '020e';
 export const OMRON_COMPANY_NAME = 'Omron Healthcare Co., LTD';
-export const BLE_TIMEOUT_IN_SECONDS = 30;
+export const BLE_SCAN_TIMEOUT_IN_SECONDS = 10;
+export const BLE_CONNECTION_TIMEOUT_IN_SECONDS = 30;
+export const BLE_TIMEOUT_IN_SECONDS = 10;
 export const BLE_BLOOD_PRESSURE_SERVICE = '1810';
 export const BLE_BP_CURRENT_TIME_SERVICE = '1805';
 export const BLE_BP_USER_DATA_SERVICE = '181C';
@@ -44,7 +46,6 @@ export const parseBloodPressureMeasure = (bloodPressureMeasureBase64) => {
     return bloodPressureMeasure;
   }
   // bloodPressureBuffer = new Uint8Array(bloodPressureBuffer, 0, 1);
-  console.log(bloodPressureBuffer[0], bloodPressureMeasure.byteLength);
   if (bloodPressureBuffer.byteLength >= 1) {
     bloodPressureMeasure.flags = bloodPressureBuffer[0];
 
@@ -61,7 +62,6 @@ export const parseBloodPressureMeasure = (bloodPressureMeasureBase64) => {
   } else {
     return bloodPressureMeasure;
   }
-  console.log('bloodPressureMeasure', bloodPressureMeasure.flags);
   if (bloodPressureBuffer.byteLength >= 5) {
     bloodPressureMeasure.systolic = bloodPressureBuffer.readUInt16LE(1);
     bloodPressureMeasure.diastolic = bloodPressureBuffer.readUInt16LE(3);
@@ -106,16 +106,8 @@ export const parseBloodPressureMeasure = (bloodPressureMeasureBase64) => {
 };
 
 export const parseDeviceManufacturerData = (deviceManufacturerDataBase64) => {
-  let deviceManufacturerData = {
-    companyIdentifierKey: undefined,
-    flag: 0,
-    inPairingMode: false,
-    isTimeSet: false,
-    numUsers: 0,
-  };
-
   if (!deviceManufacturerDataBase64) {
-    return deviceManufacturerData;
+    return undefined;
   }
   let deviceManufacturerBuffer;
   try {
@@ -124,8 +116,16 @@ export const parseDeviceManufacturerData = (deviceManufacturerDataBase64) => {
       'base64',
     );
   } catch (err) {
-    return deviceManufacturerData;
+    return undefined;
   }
+  let deviceManufacturerData = {
+    companyIdentifierKey: undefined,
+    flag: undefined,
+    inPairingMode: undefined,
+    isTimeSet: undefined,
+    numUsers: undefined,
+  };
+
   if (deviceManufacturerBuffer.byteLength >= 2) {
     deviceManufacturerData.companyIdentifierKey = (
       '0000' + deviceManufacturerBuffer.readUInt16LE(0, 2).toString(16)
